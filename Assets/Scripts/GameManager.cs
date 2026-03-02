@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(-50)]
 public class GameManager : MonoBehaviour
 {
 
@@ -18,6 +19,12 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        ItemDatabase.LoadAllItems();
+    }
+
+    void Start()
+    {
     }
 
     // Здесь можно добавить методы для сохранения/загрузки, управления сценами и т.д.

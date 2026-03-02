@@ -1,28 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// Этот скрипт вешается на GameObject, с которым можно взаимодействовать
 public class InteractableObject : MonoBehaviour
 {
     private bool isMouseOver = false;
-    public string objectName;
+    public string objectName;       // Можно оставить для отладки
+    public int itemId;              // ID предмета в базе данных (0, если не предмет)
 
     void Update()
     {
-        // Рейкаст из позиции мыши
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
 
-        // Проверяем, попал ли луч в этот объект
         if (hit.collider != null && hit.collider.gameObject == gameObject)
         {
             if (!isMouseOver)
             {
                 isMouseOver = true;
-                OnMouseEnter(); // вызываем наш метод
+                OnMouseEnter();
             }
         }
         else
@@ -30,11 +25,10 @@ public class InteractableObject : MonoBehaviour
             if (isMouseOver)
             {
                 isMouseOver = false;
-                OnMouseExit(); // вызываем наш метод
+                OnMouseExit();
             }
         }
 
-        // Далее обработка клика (как уже есть)...
         if (Mouse.current.leftButton.wasPressedThisFrame && hit.collider != null && hit.collider.gameObject == gameObject)
         {
             Interact();
@@ -44,19 +38,46 @@ public class InteractableObject : MonoBehaviour
     private void OnMouseEnter()
     {
         Debug.Log("Мышь наведена на " + objectName);
-        // Здесь можно, например, изменить цвет спрайта:
+        // Например, подсветка
         // GetComponent<SpriteRenderer>().color = Color.yellow;
     }
 
     private void OnMouseExit()
     {
         Debug.Log("Мышь покинула " + objectName);
-        // Вернуть исходный цвет:
         // GetComponent<SpriteRenderer>().color = Color.white;
     }
+
     public virtual void Interact()
     {
         Debug.Log("Взаимодействие с " + objectName);
-    }
 
+        // Если это предмет (itemId > 0)
+        if (itemId > 0)
+        {
+            Item item = ItemDatabase.GetItem(itemId);
+            if (item != null)
+            {
+                // Проверим, можно ли взять предмет (isTakeable)
+                if (item.isTakeable)
+                {
+                    // Проверим, нет ли уже такого в инвентаре (опционально)
+                    // if (!InventoryManager.Instance.HasItem(item.itemName))
+                    {
+                        InventoryManager.Instance.AddItem(item);
+                        // После взятия можно уничтожить объект на сцене или сделать неактивным
+                        gameObject.SetActive(false);
+                    }
+                }
+                else
+                {
+                    Debug.Log("Этот предмет нельзя взять");
+                }
+            }
+            else
+            {
+                Debug.LogError($"Предмет с ID {itemId} не найден в базе");
+            }
+        }
+    }
 }
