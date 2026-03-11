@@ -41,3 +41,24 @@ public class InventorySlot
     [Column("slot_index")]
     public int slotIndex { get; set; }
 }
+
+[Table("PlayerProgress")]
+public class PlayerProgress
+{
+    [PrimaryKey]
+    public int Id { get; set; } = 1; // всегда одна запись
+    public string currentLocation { get; set; }
+}
+
+[Table("Actions")]
+public class ActionData
+{
+    [PrimaryKey, AutoIncrement]
+    public int id { get; set; }
+    public string objectId { get; set; }
+    public int priority { get; set; }
+    public string conditionFlag { get; set; }
+    public string actionType { get; set; }
+    public string actionValue { get; set; }
+    public string failMessage { get; set; }
+}
