@@ -303,6 +303,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31f0ea41a8fc784419a018dd6b151aa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestDB
+  testObjectId: object_1
+  testNpcId: cat
+  testItemId: 1
+  testSceneName: MainMenu
 --- !u!1 &762637665
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,6 +474,10 @@ GameObject:
   - component: {fileID: 850198716}
   - component: {fileID: 850198715}
   - component: {fileID: 850198718}
+  - component: {fileID: 850198723}
+  - component: {fileID: 850198722}
+  - component: {fileID: 850198721}
+  - component: {fileID: 850198720}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -540,6 +548,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc9fa7e0b8ba1d547b1784d25bd21193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DatabaseManager
+--- !u!114 &850198720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850198714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2e0e9eac0ce7443b5dfc3588921b3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
+--- !u!114 &850198721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850198714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c18cb7401127f946be9c776e2b4c971, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
+--- !u!114 &850198722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850198714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49e2e7f4d650104884e393e9d70150f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlagManager
+--- !u!114 &850198723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850198714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba1370365fff5f4993988f34ef0c54d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ActionManager
 --- !u!1 &990109749
 GameObject:
   m_ObjectHideFlags: 0

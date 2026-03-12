@@ -62,3 +62,17 @@ public class ActionData
     public string actionValue { get; set; }
     public string failMessage { get; set; }
 }
+
+
+[Table("Dialogues")]
+public class DialogueRecord
+{
+    [PrimaryKey, AutoIncrement]
+    public int id { get; set; }
+    public string npc_id { get; set; }
+    public string trigger_flag { get; set; }
+    public int priority { get; set; }
+    public string speaker { get; set; }
+    public string text { get; set; }
+    public int? next_id { get; set; } // может быть NULL
+}
