@@ -1,0 +1,20 @@
+using UnityEngine;
+
+public class Cat : InteractableObject
+{
+    public string catDialogueId = "cat"; // ID диалога в DialogueManager
+
+    public override void Interact()
+    {
+        // Сначала вызываем базовый метод (для отладки)
+        base.Interact();
+
+        // Запускаем диалог с кошкой
+        DialogueManager.StartDialogue(catDialogueId);
+        Debug.Log("Диалог с кошкой запущен");
+        
+        // После первого диалога с кошкой можно установить флаг,
+        // что разговор состоялся (если это требуется)
+        // FlagManager.SetFlag("talked_to_cat", 1);
+    }
+}
