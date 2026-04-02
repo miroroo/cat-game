@@ -10,7 +10,7 @@ public class Cat : InteractableObject
         base.Interact();
 
         // Запускаем диалог с кошкой
-        DialogueManager.StartDialogue(catDialogueId);
+        DialogueManager.Instance.StartDialogue(catDialogueId);
         Debug.Log("Диалог с кошкой запущен");
         
         // После первого диалога с кошкой можно установить флаг,

@@ -10,9 +10,9 @@ public class Door : InteractableObject
         base.Interact();
 
         // Проверяем флаг двери
-        int flagValue = FlagManager.GetFlag(doorFlagId);
+        bool flagValue = FlagManager.Instance.GetFlag(doorFlagId);
 
-        if (flagValue == 1)
+        if (flagValue == true)
         {
             Debug.Log("дверь открыта");
             // Здесь можно добавить анимацию открытия двери

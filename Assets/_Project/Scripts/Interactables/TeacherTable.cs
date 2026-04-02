@@ -9,9 +9,9 @@ public class TeacherTable : InteractableObject
     {
         // Проверяем, был ли уже диалог с кошкой
         // Предполагаем, что после диалога с кошкой устанавливается флаг table_loc1 = 1
-        int flagValue = FlagManager.GetFlag(tableFlagId);
+        bool flagValue = FlagManager.Instance.GetFlag(tableFlagId);
 
-        if (flagValue == 1)
+        if (flagValue == true)
         {
             // Диалог с кошкой был - можно взаимодействовать со столом
             // Вызываем базовый метод (он обработает itemId, если он > 0)
