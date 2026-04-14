@@ -9,7 +9,10 @@ public class InteractableObject : MonoBehaviour
 
     void Update()
     {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        if (Camera.main == null)
+            return;
+
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
 
         if (hit.collider != null && hit.collider.gameObject == gameObject)
@@ -19,6 +22,11 @@ public class InteractableObject : MonoBehaviour
                 isMouseOver = true;
                 OnMouseEnter();
             }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                Interact();
+            }
         }
         else
         {
@@ -27,11 +35,6 @@ public class InteractableObject : MonoBehaviour
                 isMouseOver = false;
                 OnMouseExit();
             }
-        }
-
-        if (Mouse.current.leftButton.wasPressedThisFrame && hit.collider != null && hit.collider.gameObject == gameObject)
-        {
-            Interact();
         }
     }
 

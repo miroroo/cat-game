@@ -1,35 +1,31 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TeacherTable : InteractableObject
 {
-    public string tableFlagId = "table_loc1"; // ID флага в FlagManager
-    public string catDialogueFlagId = "talked_to_cat"; // Флаг, что поговорили с кошкой
+    public string catDialogueFlagId = "talked_to_cat";
 
     public override void Interact()
     {
-        // Проверяем, был ли уже диалог с кошкой
-        // Предполагаем, что после диалога с кошкой устанавливается флаг table_loc1 = 1
-        bool flagValue = FlagManager.Instance.GetFlag(tableFlagId);
+        Debug.Log("Нажал на стол");
 
-        if (flagValue == true)
+        if (FlagManager.Instance == null)
         {
-            // Диалог с кошкой был - можно взаимодействовать со столом
-            // Вызываем базовый метод (он обработает itemId, если он > 0)
-            base.Interact();
-            
-            // Дополнительная логика взаимодействия со столом
-            Debug.Log("Взаимодействие со столом преподавателя");
-            
-            // Здесь можно, например, найти ключ
-            // Если у стола есть itemId > 0, базовый метод сам добавит предмет в инвентарь
+            Debug.LogError("FlagManager не найден!");
+            return;
+        }
+
+        bool flagValue = FlagManager.Instance.GetFlag(catDialogueFlagId);
+        Debug.Log("Флаг = " + flagValue);
+
+        if (flagValue)
+        {
+            Debug.Log("Загружаю сцену FindKey");
+            SceneManager.LoadScene("FindKey");
         }
         else
         {
-            // Диалога с кошкой не было - стол недоступен
-            Debug.Log("Стол преподавателя пока недоступен. Сначала поговорите с кошкой.");
-            
-            // Можно вывести подсказку через UIManager, если он есть
-            // UIManager.Instance.ShowMessage("Сначала нужно поговорить с кошкой");
+            Debug.Log("Сначала поговорите с кошкой");
         }
     }
 }
