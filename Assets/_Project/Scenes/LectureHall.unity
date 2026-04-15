@@ -875,9 +875,12 @@ GameObject:
   - component: {fileID: 1290855118}
   - component: {fileID: 1290855119}
   - component: {fileID: 1290855120}
-  - component: {fileID: 1290855122}
   - component: {fileID: 1290855121}
   - component: {fileID: 1290855123}
+  - component: {fileID: 1290855126}
+  - component: {fileID: 1290855122}
+  - component: {fileID: 1290855125}
+  - component: {fileID: 1290855124}
   m_Layer: 0
   m_Name: cat_0
   m_TagString: Untagged
@@ -1012,7 +1015,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1290855112}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c39411d138833541bc5043b45947195, type: 3}
   m_Name: 
@@ -1128,6 +1131,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc9fa7e0b8ba1d547b1784d25bd21193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DatabaseManager
+--- !u!114 &1290855124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290855112}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2e0e9eac0ce7443b5dfc3588921b3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
+--- !u!114 &1290855125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290855112}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49e2e7f4d650104884e393e9d70150f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlagManager
+--- !u!114 &1290855126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290855112}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c39411d138833541bc5043b45947195, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogTrigger
+  npcId: 
+  dialogFile: {fileID: 0}
 --- !u!1 &2059686726
 GameObject:
   m_ObjectHideFlags: 0
