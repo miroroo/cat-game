@@ -99,6 +99,8 @@ public class DialogueManager : MonoBehaviour
         return null;
     }
 
+
+
     // =========================
     // ПОКАЗ РЕПЛИКИ + ЛОГИКА
     // =========================
@@ -110,42 +112,39 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        // вывод текста
-        string displayText = string.IsNullOrEmpty(line.speaker)
-            ? line.text
-            : $"{line.speaker}: {line.text}";
-
-        Debug.Log(displayText);
-
-        // =========================
-        // 🔥 НОВОЕ: установка флага
-        // =========================
+        // Устанавливаем флаг
         if (!string.IsNullOrEmpty(line.set_flag))
         {
             FlagManager.Instance?.SetFlag(line.set_flag, true);
-            Debug.Log($"Установлен флаг: {line.set_flag}");
         }
 
-        // =========================
-        // ПЕРЕХОД К СЛЕДУЮЩЕЙ СТРОКЕ
-        // =========================
-        if (line.next_id.HasValue && line.next_id.Value > 0)
+        string speaker = string.IsNullOrEmpty(line.speaker) ? "" : line.speaker;
+        string text = line.text;
+
+        // Показываем UI и ждём кнопку
+        DialogueUI.Instance.Show(speaker, text, () =>
         {
-            DialogueRecord nextLine = dialoguesCache[line.npc_id]
-                .FirstOrDefault(l => l.id == line.next_id.Value);
+            ShowNextLine(line);
+        });
+    }
+
+    // =========================
+    // ПОКАЗ РЕПЛИКИ 
+    // =========================
+    private void ShowNextLine(DialogueRecord currentLine)
+    {
+        if (currentLine.next_id.HasValue && currentLine.next_id.Value > 0)
+        {
+            var nextLine = dialoguesCache[currentLine.npc_id]
+                .FirstOrDefault(l => l.id == currentLine.next_id.Value);
 
             if (nextLine != null)
             {
                 ShowLine(nextLine);
                 return;
             }
-            else
-            {
-                Debug.LogWarning($"DialogueManager: не найдена следующая реплика id={line.next_id}");
-            }
         }
 
-        // если нет next — диалог окончен
         EndDialogue();
     }
 
@@ -154,6 +153,7 @@ public class DialogueManager : MonoBehaviour
     // =========================
     private void EndDialogue()
     {
+        DialogueUI.Instance.Hide();
         Debug.Log("Диалог завершён");
     }
 }
