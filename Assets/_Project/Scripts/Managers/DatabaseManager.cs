@@ -26,9 +26,19 @@ public class DatabaseManager : MonoBehaviour
     {
         try
         {
-            string dbPath = Application.streamingAssetsPath + "/game_database.db";
-            Debug.Log($"Подключаемся к БД: {dbPath}");
-            _db = new SQLiteConnection(dbPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
+            string sourcePath = System.IO.Path.Combine(Application.streamingAssetsPath, "game_database.db");
+            string targetPath = System.IO.Path.Combine(Application.persistentDataPath, "game_database.db");
+
+            if (!System.IO.File.Exists(targetPath))
+            {
+                System.IO.File.Copy(sourcePath, targetPath);
+                Debug.Log("База скопирована в persistentDataPath");
+            }
+
+            Debug.Log($"Подключаемся к БД: {targetPath}");
+
+            _db = new SQLiteConnection(targetPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
+
             Debug.Log("База данных успешно открыта");
         }
         catch (System.Exception ex)
@@ -54,6 +64,7 @@ public class DatabaseManager : MonoBehaviour
     {
         if (_db != null)
         {
+            Debug.Log("DatabaseManager уничтожен");
             _db.Close();
             _db.Dispose();
         }

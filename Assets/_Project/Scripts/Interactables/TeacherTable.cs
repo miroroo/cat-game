@@ -3,7 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class TeacherTable : InteractableObject
 {
-    public string catDialogueFlagId = "talked_to_cat";
+    [Header("Dialogue")]
+    public int requiredId = 17; 
+
+    [Header("Scene")]
+    public string sceneToLoad = "FindKey";
 
     public override void Interact()
     {
@@ -15,17 +19,23 @@ public class TeacherTable : InteractableObject
             return;
         }
 
-        bool flagValue = FlagManager.Instance.GetFlag(catDialogueFlagId);
-        Debug.Log("Флаг = " + flagValue);
-
-        if (flagValue)
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
         {
-            Debug.Log("Загружаю сцену FindKey");
-            SceneManager.LoadScene("FindKey");
+            Debug.Log("Диалог идёт — нельзя взаимодействовать");
+            return;
+        }
+
+        int currentId = FlagManager.Instance.GetInt("dialogue_progress");
+
+        Debug.Log($"Текущий id диалога = {currentId}");
+
+        if (currentId >= requiredId)
+        {
+            SceneManager.LoadScene(sceneToLoad);
         }
         else
         {
-            Debug.Log("Сначала поговорите с кошкой");
+            Debug.Log("Сначала завершите диалог");
         }
     }
 }

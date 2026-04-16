@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 734061193}
   - component: {fileID: 734061192}
+  - component: {fileID: 734061194}
   m_Layer: 0
   m_Name: 5ef203b4-3a21-4484-ac9e-1da0f7f2af21_0
   m_TagString: MainCamera
@@ -210,6 +211,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &734061194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 734061191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cb85ab7f37b9e94a95da66f669690bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FitBackgroundToScreen
 --- !u!1 &1745002239
 GameObject:
   m_ObjectHideFlags: 0

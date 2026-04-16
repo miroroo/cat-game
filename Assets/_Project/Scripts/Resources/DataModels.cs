@@ -29,7 +29,7 @@ public class Flag
     public string flagName { get; set; }
 
     [Column("flag_value")]
-    public bool flagValue { get; set; }
+    public int flagValue { get; set; }
 }
 
 [Table("Inventory")]

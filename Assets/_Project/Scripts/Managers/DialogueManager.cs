@@ -2,11 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[DefaultExecutionOrder(-80)]
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance { get; private set; }
 
     private Dictionary<string, List<DialogueRecord>> dialoguesCache = new Dictionary<string, List<DialogueRecord>>();
+    private Dictionary<int, DialogueRecord> dialogueById = new Dictionary<int, DialogueRecord>();
+    public bool IsDialogueActive { get; private set; }
 
     private void Awake()
     {
@@ -14,7 +17,11 @@ public class DialogueManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            LoadAllDialogues(); // можно грузить сразу
+            LoadAllDialogues();
+            //if (FlagManager.Instance != null)
+            //{
+            //    FlagManager.Instance.ResetAllFlags();
+            //}
         }
         else
         {
@@ -22,9 +29,16 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    // =========================
-    // ЗАГРУЗКА ИЗ БД
-    // =========================
+    private string GetProgressKey()
+    {
+        return "dialogue_progress";
+    }
+
+    private string GetCompletedKey()
+    {
+        return "dialogue_completed";
+    }
+
     private void LoadAllDialogues()
     {
         if (DatabaseManager.Instance?.Connection == null)
@@ -37,9 +51,13 @@ public class DialogueManager : MonoBehaviour
         List<DialogueRecord> allLines = db.Table<DialogueRecord>().ToList();
 
         dialoguesCache.Clear();
+        dialogueById.Clear();
+
 
         foreach (var line in allLines)
         {
+            dialogueById[line.id] = line;
+
             if (!dialoguesCache.ContainsKey(line.npc_id))
                 dialoguesCache[line.npc_id] = new List<DialogueRecord>();
 
@@ -54,56 +72,45 @@ public class DialogueManager : MonoBehaviour
         LoadAllDialogues();
     }
 
-    // =========================
-    // ЗАПУСК ДИАЛОГА (НЕ МЕНЯЕМ СИГНАТУРУ!)
-    // =========================
+
     public void StartDialogue(string npcId)
     {
-        if (dialoguesCache.Count == 0)
+        if (IsDialogueActive) return;
+
+        if (!dialoguesCache.ContainsKey(npcId))
             LoadAllDialogues();
 
         if (!dialoguesCache.ContainsKey(npcId))
         {
-            Debug.LogWarning($"DialogueManager: нет диалогов для NPC {npcId}");
+            Debug.LogWarning($"Нет диалогов для {npcId}");
             return;
         }
 
-        var lines = dialoguesCache[npcId]
-            .OrderBy(l => l.priority)
-            .ToList();
+        var lines = dialoguesCache[npcId];
 
-        DialogueRecord firstLine = GetFirstAvailableLine(lines);
+        int lastId = FlagManager.Instance.GetInt(GetProgressKey());
 
-        if (firstLine != null)
-            ShowLine(firstLine);
-        else
-            Debug.Log($"DialogueManager: нет доступных реплик для NPC {npcId}");
-    }
+        DialogueRecord current;
 
-    // =========================
-    // ВЫБОР ПЕРВОЙ ДОСТУПНОЙ РЕПЛИКИ
-    // =========================
-    private DialogueRecord GetFirstAvailableLine(List<DialogueRecord> lines)
-    {
-        foreach (var line in lines)
+        if (lastId == 0)
         {
-            // если нет условия — показываем
-            if (string.IsNullOrEmpty(line.trigger_flag))
-                return line;
-
-            // если есть флаг и он true
-            if (FlagManager.Instance?.GetFlag(line.trigger_flag) == true)
-                return line;
+            // ищем начало всей цепочки
+            current = dialogueById.Values
+                .FirstOrDefault(l => !dialogueById.Values.Any(x => x.next_id == l.id));
+        }
+        else
+        {
+            dialogueById.TryGetValue(lastId, out current);
         }
 
-        return null;
+        RunDialogueChain(current);
     }
 
+    private void RunDialogueChain(DialogueRecord startLine)
+    {
+        ShowLine(startLine);
+    }
 
-
-    // =========================
-    // ПОКАЗ РЕПЛИКИ + ЛОГИКА
-    // =========================
     private void ShowLine(DialogueRecord line)
     {
         if (line == null)
@@ -112,48 +119,55 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        // Устанавливаем флаг
-        if (!string.IsNullOrEmpty(line.set_flag))
-        {
-            FlagManager.Instance?.SetFlag(line.set_flag, true);
-        }
+        IsDialogueActive = true;
+
+        Debug.Log("DialogueUI instance: " + DialogueUI.Instance);
 
         string speaker = string.IsNullOrEmpty(line.speaker) ? "" : line.speaker;
         string text = line.text;
 
+        Debug.Log("TEXT: " + text);
         // Показываем UI и ждём кнопку
         DialogueUI.Instance.Show(speaker, text, () =>
         {
+            // ставим флаг
+            if (!string.IsNullOrEmpty(line.set_flag))
+            {
+                FlagManager.Instance?.SetFlag(line.set_flag, true);
+            }
+
             ShowNextLine(line);
         });
     }
 
-    // =========================
-    // ПОКАЗ РЕПЛИКИ 
-    // =========================
     private void ShowNextLine(DialogueRecord currentLine)
     {
+        FlagManager.Instance.SetInt(GetProgressKey(), currentLine.id);
+        Debug.Log($"SAVE PROGRESS: {currentLine.id}");
+
         if (currentLine.next_id.HasValue && currentLine.next_id.Value > 0)
         {
-            var nextLine = dialoguesCache[currentLine.npc_id]
-                .FirstOrDefault(l => l.id == currentLine.next_id.Value);
-
-            if (nextLine != null)
+            if (dialogueById.TryGetValue(currentLine.next_id.Value, out var nextLine))
             {
                 ShowLine(nextLine);
                 return;
             }
         }
 
-        EndDialogue();
+        EndDialogue(currentLine);
     }
 
-    // =========================
-    // ЗАВЕРШЕНИЕ
-    // =========================
-    private void EndDialogue()
+    private void EndDialogue(DialogueRecord lastLine = null)
     {
         DialogueUI.Instance.Hide();
+        IsDialogueActive = false;
+
+        if (lastLine != null)
+        {
+            string key = GetCompletedKey();
+            FlagManager.Instance.SetFlag(key, true);
+        }
+
         Debug.Log("Диалог завершён");
     }
 }

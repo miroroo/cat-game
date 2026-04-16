@@ -12,6 +12,7 @@ public static class ItemDatabase
         if (DatabaseManager.Instance == null || DatabaseManager.Instance.Connection == null)
         {
             Debug.LogError("DatabaseManager не готов, предметы не загружены");
+            return;
         }
 
         itemsById = new Dictionary<int, Item>();

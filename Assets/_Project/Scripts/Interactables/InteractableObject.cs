@@ -40,14 +40,14 @@ public class InteractableObject : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        Debug.Log("Мышь наведена на " + objectName);
+        //Debug.Log("Мышь наведена на " + objectName);
         // Например, подсветка
         // GetComponent<SpriteRenderer>().color = Color.yellow;
     }
 
     private void OnMouseExit()
     {
-        Debug.Log("Мышь покинула " + objectName);
+        //Debug.Log("Мышь покинула " + objectName);
         // GetComponent<SpriteRenderer>().color = Color.white;
     }
 
