@@ -4,7 +4,6 @@ public class Cat : InteractableObject
 {
     public override void Interact()
     {
-        base.Interact();
 
         Debug.Log("Клик по кошке");
 
@@ -12,3 +11,4 @@ public class Cat : InteractableObject
 
     }
 }
+

@@ -579,7 +579,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TeacherTable
   objectName: 
   itemId: 0
-  catDialogueFlagId: talked_to_cat
+  requiredId: 17
+  sceneToLoad: FindKey
 --- !u!1 &409559765
 GameObject:
   m_ObjectHideFlags: 0
@@ -1978,6 +1979,7 @@ GameObject:
   - component: {fileID: 2058850564}
   - component: {fileID: 2058850563}
   - component: {fileID: 2058850568}
+  - component: {fileID: 2058850569}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2060,6 +2062,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc9fa7e0b8ba1d547b1784d25bd21193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DatabaseManager
+--- !u!114 &2058850569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058850562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6441c423f1ce03e4dac85cb76da75cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClickManager
 --- !u!1 &2059686726
 GameObject:
   m_ObjectHideFlags: 0
