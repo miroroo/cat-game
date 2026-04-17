@@ -50,18 +50,18 @@ public class DialogueUI : MonoBehaviour
 
     void UpdateCharacters(string speaker)
     {
-        Color active = Color.white;
-        Color inactive = new Color(1, 1, 1, 0.4f);
+        Color active = Color.white; // обычный цвет
+        Color darker = new Color(0.5f, 0.5f, 0.5f, 1f); // затемнённый (серый), непрозрачный
 
         if (speaker == "Саша")
         {
-            leftCat.color = inactive;
+            leftCat.color = darker;
             rightSasha.color = active;
         }
         else if (speaker == "Марсик")
         {
             leftCat.color = active;
-            rightSasha.color = inactive;
+            rightSasha.color = darker;
         }
     }
 

@@ -18,10 +18,12 @@ public class DialogueManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             LoadAllDialogues();
+
             if (FlagManager.Instance != null)
             {
                 FlagManager.Instance.ResetAllFlags();
             }
+
         }
         else
         {
