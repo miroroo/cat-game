@@ -1,27 +1,31 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class Door : InteractableObject
+public class Door : MonoBehaviour
 {
-    public string doorFlagId = "door_loc1"; // ID флага в FlagManager
+    public string sceneToLoad = "TestScene";
 
-    public override void Interact()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Сначала вызываем базовый метод (для отладки)
-        base.Interact();
+        if (!collision.gameObject.CompareTag("Player"))
+            return;
 
-        // Проверяем флаг двери
-        bool flagValue = FlagManager.Instance.GetFlag(doorFlagId);
-
-        if (flagValue == true)
+        if (FlagManager.Instance == null)
         {
-            Debug.Log("дверь открыта");
-            // Здесь можно добавить анимацию открытия двери
-            // Например: GetComponent<Animator>().SetTrigger("Open");
+            Debug.LogError("FlagManager не найден!");
+            return;
+        }
+
+        bool isUnlocked = FlagManager.Instance.GetFlag("door_unlocked");
+
+        if (isUnlocked)
+        {
+            Debug.Log("Дверь открыта — переходим");
+            SceneManager.LoadScene(sceneToLoad);
         }
         else
         {
-            Debug.Log("дверь закрыта");
-            // Здесь можно добавить подсказку, что дверь заперта
+            Debug.Log("Дверь закрыта");
         }
     }
 }

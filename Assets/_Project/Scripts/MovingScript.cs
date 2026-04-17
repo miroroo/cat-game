@@ -1,115 +1,47 @@
-//using UnityEngine;
-
-//public class PlayerClickMovement : MonoBehaviour
-//{
-//    public float moveSpeed = 5f;
-//    public GameObject LeftWall;
-
-//    private Rigidbody2D rb;
-//    private float targetX;
-//    private bool isMoving = false;
-
-//    private float minX;
-//    private float maxX;
-
-//    void Start()
-//    {
-//        rb = GetComponent<Rigidbody2D>();
-
-//        Camera cam = Camera.main;
-
-//        float height = cam.orthographicSize * 2f;
-//        float width = height * cam.aspect;
-
-//        // границы камеры
-//        minX = cam.transform.position.x - width / 2f;
-//        maxX = cam.transform.position.x + width / 2f;
-//    }
-
-//    void Update()
-//    {
-//        if (Camera.main == null) return;
-
-//        if (Input.GetMouseButtonDown(0))
-//        {
-//            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-//            // Проверяем, есть ли объект под мышкой
-//            Collider2D hit = Physics2D.OverlapPoint(mousePos);
-
-//            if (hit != null)
-//            {
-//                // Если это интерактивный объект — НЕ двигаемся
-//                if (hit.GetComponent<InteractableObject>() != null)
-//                {
-//                    Debug.Log("Клик по объекту, не двигаемся");
-//                    return;
-//                }
-//            }
-
-//            // Иначе — двигаем игрока
-//            float mouseX = mousePos.x;
-
-//            targetX = Mathf.Clamp(mouseX, minX, maxX);
-//            isMoving = true;
-//        }
-//    }
-
-//    void FixedUpdate()
-//    {
-//        if (!isMoving)
-//        {
-//            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-//            return;
-//        }
-
-//        float direction = Mathf.Sign(targetX - transform.position.x);
-
-//        rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
-
-//        // Остановка
-//        if (Mathf.Abs(transform.position.x - targetX) < 0.1f)
-//        {
-//            isMoving = false;
-//            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-//        }
-//    }
-
-//    void OnCollisionEnter2D(Collision2D collision)
-//    {
-//        if (collision.gameObject == LeftWall)
-//        {
-//            Debug.Log("Дверь закрыта");
-//        }
-//    }
-//}
-
-
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5f;
-    private Animator animator;
+    public float moveSpeed = 5f;
+
     private Rigidbody2D rb;
     private Vector2 movement;
+    private Animator animator;
+    private SpriteRenderer sprite;
 
     void Start()
     {
-        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     void Update()
     {
-        movement.x = Input.GetAxis("Horizontal");
-        movement.y = Input.GetAxis("Vertical");
 
-        animator.SetFloat("Speed", movement.sqrMagnitude);
+        movement.x = 0f;
+        movement.y = 0f;
+
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+            movement.x = -1f;
+        else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+            movement.x = 1f;
+
+        bool isMoving = movement.x != 0;
+        animator.SetBool("isMoving", isMoving);
+
+        if (movement.x > 0)
+            sprite.flipX = false;
+        else if (movement.x < 0)
+            sprite.flipX = true;
     }
 
     void FixedUpdate()
     {
-        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
+        if (movement.magnitude < 0.2f)
+        {
+            movement = Vector2.zero;
+        }
+        rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
     }
 }

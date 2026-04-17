@@ -13,7 +13,10 @@ public class InteractableObject : MonoBehaviour
             return;
 
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
+
+        LayerMask mask = LayerMask.GetMask("interactables");
+
+        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero, Mathf.Infinity, mask);
 
         if (hit.collider != null && hit.collider.gameObject == gameObject)
         {
