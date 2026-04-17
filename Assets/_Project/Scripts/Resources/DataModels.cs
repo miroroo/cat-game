@@ -29,7 +29,7 @@ public class Flag
     public string flagName { get; set; }
 
     [Column("flag_value")]
-    public bool flagValue { get; set; }
+    public int flagValue { get; set; }
 }
 
 [Table("Inventory")]
@@ -71,6 +71,7 @@ public class DialogueRecord
     public int id { get; set; }
     public string npc_id { get; set; }
     public string trigger_flag { get; set; }
+    public string set_flag { get; set; }
     public int priority { get; set; }
     public string speaker { get; set; }
     public string text { get; set; }

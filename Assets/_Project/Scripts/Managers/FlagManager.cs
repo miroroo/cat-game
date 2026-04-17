@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[DefaultExecutionOrder(-90)]
 public class FlagManager : MonoBehaviour
 {
     public static FlagManager Instance { get; private set; }
 
-    private Dictionary<string, bool> flags = new Dictionary<string, bool>();
+    private Dictionary<string, int> flags = new Dictionary<string, int>();
 
     private void Awake()
     {
@@ -21,17 +22,17 @@ public class FlagManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     private void LoadFlagsFromDB()
     {
         flags.Clear();
         var db = DatabaseManager.Instance.Connection;
 
-        // Загружаем все флаги
         List<Flag> allFlags = db.Table<Flag>().ToList();
 
         foreach (var flag in allFlags)
         {
-            flags[flag.flagName] = flag.flagValue;
+            flags[flag.flagName] = flag.flagValue; // теперь просто int
         }
 
         Debug.Log($"Загружено {flags.Count} флагов");
@@ -39,31 +40,80 @@ public class FlagManager : MonoBehaviour
 
     public bool GetFlag(string flagName)
     {
-        return flags.TryGetValue(flagName, out bool value) && value;
+        return flags.TryGetValue(flagName, out int value) && value == 1;
     }
 
     public void SetFlag(string flagName, bool value)
     {
-        flags[flagName] = value;
+        int intValue = value ? 1 : 0;
+
+        flags[flagName] = intValue;
 
         var db = DatabaseManager.Instance.Connection;
 
-        // Проверяем, есть ли уже такой флаг в БД
         var existingFlag = db.Table<Flag>()
             .FirstOrDefault(f => f.flagName == flagName);
 
         if (existingFlag != null)
         {
-            // Обновляем существующий
-            existingFlag.flagValue = value;
+            existingFlag.flagValue = intValue;
             db.Update(existingFlag);
         }
         else
         {
-            // Вставляем новый
-            db.Insert(new Flag { flagName = flagName, flagValue = value });
+            db.Insert(new Flag
+            {
+                flagName = flagName,
+                flagValue = intValue
+            });
+        }
+    }
+
+    public int GetInt(string key)
+    {
+        return flags.TryGetValue(key, out int value) ? value : 0;
+    }
+
+    public void SetInt(string key, int value)
+    {
+        flags[key] = value;
+
+        var db = DatabaseManager.Instance.Connection;
+
+        var existing = db.Table<Flag>()
+            .FirstOrDefault(f => f.flagName == key);
+
+        if (existing != null)
+        {
+            existing.flagValue = value;
+            db.Update(existing);
+        }
+        else
+        {
+            db.Insert(new Flag { flagName = key, flagValue = value });
+        }
+    }
+
+    public void ResetAllFlags()
+    {
+        var db = DatabaseManager.Instance.Connection;
+
+        foreach (var key in flags.Keys.ToList())
+        {
+            flags[key] = 0;
         }
 
+        var allFlags = db.Table<Flag>().ToList();
 
+        foreach (var flag in allFlags)
+        {
+            flag.flagValue = 0;
+            db.Update(flag);
+        }
+
+        Debug.Log("Все флаги сброшены");
     }
 }
+
+
+//объединить методы

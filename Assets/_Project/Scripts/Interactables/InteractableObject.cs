@@ -13,7 +13,10 @@ public class InteractableObject : MonoBehaviour
             return;
 
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
+
+        LayerMask mask = LayerMask.GetMask("interactables");
+
+        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero, Mathf.Infinity, mask);
 
         if (hit.collider != null && hit.collider.gameObject == gameObject)
         {
@@ -40,14 +43,14 @@ public class InteractableObject : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        Debug.Log("Мышь наведена на " + objectName);
+        //Debug.Log("Мышь наведена на " + objectName);
         // Например, подсветка
         // GetComponent<SpriteRenderer>().color = Color.yellow;
     }
 
     private void OnMouseExit()
     {
-        Debug.Log("Мышь покинула " + objectName);
+        //Debug.Log("Мышь покинула " + objectName);
         // GetComponent<SpriteRenderer>().color = Color.white;
     }
 
