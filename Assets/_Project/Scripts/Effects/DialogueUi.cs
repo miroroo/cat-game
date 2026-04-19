@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 using UnityEngine.UI;
 
 public class DialogueUI : MonoBehaviour
@@ -15,17 +16,44 @@ public class DialogueUI : MonoBehaviour
     public Image rightSasha;
     public GameObject blocker;
 
+    private float normalHeight;
+    private float smallHeight;
+    private RectTransform panelRect;
+
     private System.Action onContinue;
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+
+            DontDestroyOnLoad(transform.root.gameObject);
+
+            panelRect = dialoguePanel.GetComponent<RectTransform>();
+
+            normalHeight = panelRect.sizeDelta.y;
+            smallHeight = normalHeight / 2f;
+        }
+        else
+        {
+            Destroy(transform.root.gameObject);
+            return;
+        }
+
         Hide();
-        blocker.SetActive(false);
+
+        if (blocker != null)
+            blocker.SetActive(false);
     }
 
     public void Show(string speaker, string text, System.Action continueCallback)
     {
+        panelRect.sizeDelta = new Vector2(panelRect.sizeDelta.x,normalHeight);
+
+        leftCat.enabled = true;
+        rightSasha.enabled = true;
+
         dialoguePanel.SetActive(true);
         blocker.SetActive(true); // при диалоге
 
@@ -67,7 +95,10 @@ public class DialogueUI : MonoBehaviour
 
     private void OnContinuePressed()
     {
-        onContinue?.Invoke();
+        if (onContinue != null)
+            onContinue.Invoke();
+        else
+            Hide();
     }
 
     void Update()
@@ -80,7 +111,42 @@ public class DialogueUI : MonoBehaviour
 
     public void Hide()
     {
-        dialoguePanel.SetActive(false);
-        blocker.SetActive(false); // после
+        if (dialoguePanel != null)
+            dialoguePanel.SetActive(false);
+
+        if (blocker != null)
+            blocker.SetActive(false);
+    }
+
+
+
+    public void Message(string speaker, string message, System.Action continueCallback)
+    {
+        dialoguePanel.SetActive(true);
+
+        panelRect.sizeDelta = new Vector2(panelRect.sizeDelta.x,smallHeight);
+
+
+        leftCat.enabled = false;
+        rightSasha.enabled = false;
+
+        speakerText.text = speaker;
+        dialogueText.text = message;
+
+        dialogueText.textWrappingMode = TextWrappingModes.Normal;
+        dialogueText.overflowMode = TextOverflowModes.Overflow;
+
+        continueButton.gameObject.SetActive(true); 
+        onContinue = continueCallback;
+        continueButton.onClick.RemoveAllListeners();
+        continueButton.onClick.AddListener(OnContinuePressed);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 }

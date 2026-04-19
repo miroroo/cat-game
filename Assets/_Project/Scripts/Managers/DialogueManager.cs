@@ -7,8 +7,10 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance { get; private set; }
 
-    private Dictionary<string, List<DialogueRecord>> dialoguesCache = new Dictionary<string, List<DialogueRecord>>();
-    private Dictionary<int, DialogueRecord> dialogueById = new Dictionary<int, DialogueRecord>();
+    // Все реплики по id
+    private Dictionary<int, DialogueRecord> dialogueById =
+        new Dictionary<int, DialogueRecord>();
+
     public bool IsDialogueActive { get; private set; }
 
     private void Awake()
@@ -17,28 +19,13 @@ public class DialogueManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
             LoadAllDialogues();
-
-            if (FlagManager.Instance != null)
-            {
-                FlagManager.Instance.ResetAllFlags();
-            }
-
         }
         else
         {
             Destroy(gameObject);
         }
-    }
-
-    private string GetProgressKey()
-    {
-        return "dialogue_progress";
-    }
-
-    private string GetCompletedKey()
-    {
-        return "dialogue_completed";
     }
 
     private void LoadAllDialogues()
@@ -52,21 +39,14 @@ public class DialogueManager : MonoBehaviour
         var db = DatabaseManager.Instance.Connection;
         List<DialogueRecord> allLines = db.Table<DialogueRecord>().ToList();
 
-        dialoguesCache.Clear();
         dialogueById.Clear();
-
 
         foreach (var line in allLines)
         {
             dialogueById[line.id] = line;
-
-            if (!dialoguesCache.ContainsKey(line.npc_id))
-                dialoguesCache[line.npc_id] = new List<DialogueRecord>();
-
-            dialoguesCache[line.npc_id].Add(line);
         }
 
-        Debug.Log($"DialogueManager: загружено {allLines.Count} реплик для {dialoguesCache.Count} NPC.");
+        Debug.Log($"DialogueManager: загружено {allLines.Count} реплик.");
     }
 
     public void ReloadDialogues()
@@ -74,38 +54,24 @@ public class DialogueManager : MonoBehaviour
         LoadAllDialogues();
     }
 
-
-    public void StartDialogue(string npcId)
+    /// <summary>
+    /// Запуск диалога с конкретного стартового узла
+    /// </summary>
+    public void StartDialogue(int startId)
     {
-        if (IsDialogueActive) return;
+        if (IsDialogueActive)
+            return;
 
-        if (!dialoguesCache.ContainsKey(npcId))
+        if (dialogueById.Count == 0)
             LoadAllDialogues();
 
-        if (!dialoguesCache.ContainsKey(npcId))
+        if (!dialogueById.TryGetValue(startId, out var startLine))
         {
-            Debug.LogWarning($"Нет диалогов для {npcId}");
+            Debug.LogWarning($"Диалог с startId = {startId} не найден");
             return;
         }
 
-        var lines = dialoguesCache[npcId];
-
-        int lastId = FlagManager.Instance.GetInt(GetProgressKey());
-
-        DialogueRecord current;
-
-        if (lastId == 0)
-        {
-            // ищем начало всей цепочки
-            current = dialogueById.Values
-                .FirstOrDefault(l => !dialogueById.Values.Any(x => x.next_id == l.id));
-        }
-        else
-        {
-            dialogueById.TryGetValue(lastId, out current);
-        }
-
-        RunDialogueChain(current);
+        RunDialogueChain(startLine);
     }
 
     private void RunDialogueChain(DialogueRecord startLine)
@@ -123,33 +89,39 @@ public class DialogueManager : MonoBehaviour
 
         IsDialogueActive = true;
 
-        Debug.Log("DialogueUI instance: " + DialogueUI.Instance);
+        string speaker = string.IsNullOrEmpty(line.speaker)
+            ? ""
+            : line.speaker;
 
-        string speaker = string.IsNullOrEmpty(line.speaker) ? "" : line.speaker;
         string text = line.text;
 
-        Debug.Log("TEXT: " + text);
-        // Показываем UI и ждём кнопку
-        DialogueUI.Instance.Show(speaker, text, () =>
-        {
-            // ставим флаг
-            if (!string.IsNullOrEmpty(line.set_flag))
-            {
-                FlagManager.Instance?.SetFlag(line.set_flag, true);
-            }
+        Debug.Log($"SHOW LINE: {line.id} | {speaker}: {text}");
 
-            ShowNextLine(line);
-        });
+        if (DialogueUI.Instance != null)
+        {
+            DialogueUI.Instance.Show(speaker, text, () =>
+            {
+                // Ставим флаг после показа реплики
+                if (!string.IsNullOrEmpty(line.set_flag))
+                {
+                    FlagManager.Instance?.SetFlag(line.set_flag, true);
+                    Debug.Log($"SET FLAG: {line.set_flag}");
+                }
+
+                ShowNextLine(line);
+            });
+        }
+        
     }
 
     private void ShowNextLine(DialogueRecord currentLine)
     {
-        FlagManager.Instance.SetInt(GetProgressKey(), currentLine.id);
-        Debug.Log($"SAVE PROGRESS: {currentLine.id}");
-
-        if (currentLine.next_id.HasValue && currentLine.next_id.Value > 0)
+        if (currentLine.next_id.HasValue &&
+            currentLine.next_id.Value > 0)
         {
-            if (dialogueById.TryGetValue(currentLine.next_id.Value, out var nextLine))
+            if (dialogueById.TryGetValue(
+                currentLine.next_id.Value,
+                out var nextLine))
             {
                 ShowLine(nextLine);
                 return;
@@ -161,15 +133,14 @@ public class DialogueManager : MonoBehaviour
 
     private void EndDialogue(DialogueRecord lastLine = null)
     {
-        DialogueUI.Instance.Hide();
-        IsDialogueActive = false;
-
-        if (lastLine != null)
+        if (DialogueUI.Instance != null)
         {
-            string key = GetCompletedKey();
-            FlagManager.Instance.SetFlag(key, true);
+            DialogueUI.Instance.Hide();
         }
+        IsDialogueActive = false;
 
         Debug.Log("Диалог завершён");
     }
 }
+
+

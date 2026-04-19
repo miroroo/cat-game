@@ -6,6 +6,7 @@ public class InteractableObject : MonoBehaviour
     private bool isMouseOver = false;
     public string objectName;       // Можно оставить для отладки
     public int itemId;              // ID предмета в базе данных (0, если не предмет)
+    //[SerializeField] private GameObject highlightObject;
 
     void Update()
     {
@@ -43,15 +44,12 @@ public class InteractableObject : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        //Debug.Log("Мышь наведена на " + objectName);
-        // Например, подсветка
-        // GetComponent<SpriteRenderer>().color = Color.yellow;
+        //highlightObject.SetActive(true);
     }
 
     private void OnMouseExit()
     {
-        //Debug.Log("Мышь покинула " + objectName);
-        // GetComponent<SpriteRenderer>().color = Color.white;
+        //highlightObject.SetActive(false);
     }
 
     public virtual void Interact()
@@ -67,13 +65,7 @@ public class InteractableObject : MonoBehaviour
                 // Проверим, можно ли взять предмет (isTakeable)
                 if (item.isTakeable)
                 {
-                    // Проверим, нет ли уже такого в инвентаре (опционально)
-                    // if (!InventoryManager.Instance.HasItem(item.itemName))
-                    {
-                        InventoryManager.Instance.AddItem(item);
-                        // После взятия можно уничтожить объект на сцене или сделать неактивным
-                        gameObject.SetActive(false);
-                    }
+                    gameObject.SetActive(false);
                 }
                 else
                 {

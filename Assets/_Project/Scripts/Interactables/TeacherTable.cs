@@ -3,8 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class TeacherTable : InteractableObject
 {
-    [Header("Dialogue")]
-    public int requiredId = 17; 
+    [Header("Dialogue Flag")]
+    [SerializeField] private string requiredFlag = "talked_to_cat_loc1";
 
     [Header("Scene")]
     public string sceneToLoad = "FindKey";
@@ -25,17 +25,21 @@ public class TeacherTable : InteractableObject
             return;
         }
 
-        int currentId = FlagManager.Instance.GetInt("dialogue_progress");
+        bool isDialogueCompleted =
+            FlagManager.Instance.GetFlag(requiredFlag);
 
-        Debug.Log($"Текущий id диалога = {currentId}");
+        Debug.Log(
+            $"Флаг {requiredFlag} = {isDialogueCompleted}"
+        );
 
-        if (currentId >= requiredId)
+        if (isDialogueCompleted)
         {
+            Debug.Log($"Загружаем сцену: {sceneToLoad}");
             SceneManager.LoadScene(sceneToLoad);
         }
         else
         {
-            Debug.Log("Сначала завершите диалог");
+            Debug.Log("Сначала завершите нужный диалог");
         }
     }
 }

@@ -17,8 +17,6 @@ public class KeyObject : InteractableObject
             return;
         }
 
-        Debug.Log("Ключ использован");
-
         FlagManager.Instance.SetFlag("door_unlocked", true);
         SceneManager.LoadScene(sceneToLoad);
 

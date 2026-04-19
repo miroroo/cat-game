@@ -26,18 +26,24 @@ public class DatabaseManager : MonoBehaviour
     {
         try
         {
-            string sourcePath = System.IO.Path.Combine(Application.streamingAssetsPath, "game_database.db");
-            string targetPath = System.IO.Path.Combine(Application.persistentDataPath, "game_database.db");
+            string sourcePath = System.IO.Path.Combine(Application.streamingAssetsPath,"game_database.db");
 
-            if (!System.IO.File.Exists(targetPath))
+            string targetPath = System.IO.Path.Combine(Application.persistentDataPath,"game_database.db");
+
+            // Для разработки:
+
+            if (System.IO.File.Exists(targetPath))
             {
-                System.IO.File.Copy(sourcePath, targetPath);
-                Debug.Log("База скопирована в persistentDataPath");
+                System.IO.File.Delete(targetPath);
+                Debug.Log("Старая база удалена");
             }
+
+            System.IO.File.Copy(sourcePath, targetPath);
+            Debug.Log("Новая база скопирована в persistentDataPath");
 
             Debug.Log($"Подключаемся к БД: {targetPath}");
 
-            _db = new SQLiteConnection(targetPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
+            _db = new SQLiteConnection(targetPath,SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
 
             Debug.Log("База данных успешно открыта");
         }
