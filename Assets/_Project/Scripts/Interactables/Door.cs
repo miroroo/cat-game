@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class Door : MonoBehaviour
 {
-    public string sceneToLoad = "TestScene";
+    public string sceneToLoad = "Coridor";
 
 
     private void OnCollisionEnter2D(Collision2D collision)

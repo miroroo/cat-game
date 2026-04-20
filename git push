@@ -1,0 +1,145 @@
+[33mcommit 39396784a54952e8d1c3b40ab346e3e4b4fdf710[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Merge: cea8f88 02349d6
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Sun Apr 19 20:35:42 2026 +0300
+
+    Merge branch 'main' of https://github.com/miroroo/muctr-game
+
+[33mcommit cea8f88cb557a0d956be65de34be5abe8eae0dd0[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Sun Apr 19 20:32:06 2026 +0300
+
+    Добавила локаци2 2(коридор) + исправила диалог
+
+[33mcommit 1a547ef67f7236e214bbcbea435a29b9a8f77011[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Fri Apr 17 14:56:53 2026 +0300
+
+    первая сцена доделана
+
+[33mcommit 02349d6c9ba7baade36287e720d8c1cc42cfa8fb[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: a8ee3c5 e607c93
+Author: Aleshina19 <darya.ale5hina@yandex.ru>
+Date:   Fri Apr 17 13:28:40 2026 +0300
+
+    Merge branch 'main' / Resolve scene conflicts
+
+[33mcommit e607c93f51db639ec7211b64735f8c8c326dfa2d[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Fri Apr 17 13:19:22 2026 +0300
+
+    начало работы над дверью и меню
+
+[33mcommit a776f65e997dc9b493620c7564f3676aa448bca8[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Thu Apr 16 20:43:41 2026 +0300
+
+    собрана мини игра
+
+[33mcommit 6ebec3059177139a3884f2555bea8506e481fbb8[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Thu Apr 16 16:37:07 2026 +0300
+
+    Готоваа первая аудитория и переход на мини игру
+
+[33mcommit 2975449ab17853e388c4822426256b77fa460eb0[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Wed Apr 15 15:17:06 2026 +0300
+
+    добавлена кнопка перехода между репликами
+
+[33mcommit 0dd550c182d30663c0e62448e6d56756d58ebc3e[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Wed Apr 15 15:06:16 2026 +0300
+
+    сделана панель диалога
+
+[33mcommit a8ee3c5de209a548cfe0e022d3f0904f094acbf1[m
+Author: Aleshina19 <darya.ale5hina@yandex.ru>
+Date:   Wed Apr 15 10:54:08 2026 +0300
+
+    демка 1 сцены и сцены мини игры
+
+[33mcommit 816449734ef14cc9b5b524f077b4920298d9a0ab[m
+Author: Aleshina19 <darya.ale5hina@yandex.ru>
+Date:   Tue Apr 14 23:18:45 2026 +0300
+
+    демка 1 сцены и сцены мини игры
+
+[33mcommit 1fd6db38c1543aab74f5ddffe01508fc13f9c0e4[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Thu Apr 2 22:44:26 2026 +0300
+
+    Поправила класс cat, door, teachertable
+
+[33mcommit 691174ba3c7c16a9239b61dfee692a76d4541d21[m
+Author: Полина Свиридова <polinasviri@gmail.com>
+Date:   Thu Mar 26 14:51:24 2026 +0300
+
+    диалоги первой локации
+
+[33mcommit 572485c45d0e9314fc4a3853d40b374e01f287fe[m
+Author: lostyzq <losty81222@gmail.com>
+Date:   Mon Mar 16 15:41:45 2026 +0300
+
+    Create TeacherTable
+
+[33mcommit 418bda6d80c27239ef161e754cc0f787994e30f1[m
+Author: lostyzq <losty81222@gmail.com>
+Date:   Mon Mar 16 15:40:46 2026 +0300
+
+    Create cat
+
+[33mcommit d2fcab8c288d5652734f4aaef6d30833b407ceef[m
+Author: lostyzq <losty81222@gmail.com>
+Date:   Mon Mar 16 15:38:53 2026 +0300
+
+    Create door class
+
+[33mcommit 8045081f175444eae5b3883d70163a1cdf65bec7[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Thu Mar 12 14:03:31 2026 +0300
+
+    Добавлен DialogueManager
+
+[33mcommit 45b250a1eea5b0399124f1487f9bddf1701489eb[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Wed Mar 11 13:15:42 2026 +0300
+
+    Добавила таблицы Actions, PlayerProgress, написала SceneManager
+
+[33mcommit 3ba7bd323458fab21bacb44708b7c4b42cde1110[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Mon Mar 2 20:54:30 2026 +0300
+
+    добавлена папочка managers
+
+[33mcommit 86f895db767b8bc63fe3b5857093487f0b86a259[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Mon Mar 2 14:50:10 2026 +0300
+
+    Подключила базу данных SQLite
+
+[33mcommit 7d74bd48e8db71126f5f10f9776ed2b9c8646ba4[m[33m ([m[1;31morigin/полина[m[33m, [m[1;31morigin/feature/test_scene[m[33m, [m[1;32mfeature/test_scene[m[33m)[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Mon Feb 23 20:00:52 2026 +0300
+
+    Добавила тестовую сцену и тестовый предмет, добавила методы MouseDown, MouseEnter, MouseExit
+
+[33mcommit 06df8ebf530ba29c6c84faa599faa866ff12ba64[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Fri Feb 20 17:01:06 2026 +0300
+
+    Написаны базовые скрипты
+
+[33mcommit 4e240d774a1dde2d7130608583839aee974af615[m
+Author: miroroo <miroror173.173@gmail.com>
+Date:   Fri Feb 20 11:43:34 2026 +0300
+
+    Создала архитектуру
+
+[33mcommit b8e96cd4316ad417c8df7a2177843635e4cb418a[m
+Author: Манжукова Маргарита <miroro173.173@gmail.com>
+Date:   Wed Feb 18 15:46:42 2026 +0300
+
+    Initial commit

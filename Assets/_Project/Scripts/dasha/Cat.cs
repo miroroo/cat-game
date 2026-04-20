@@ -12,18 +12,19 @@ public class Cat : InteractableObject
             DialogueManager.Instance.StartDialogue(13);
             FlagManager.Instance.SetFlag("talked_to_cat", true);
         }
+
         else if (!FlagManager.Instance.GetFlag("door_unlocked"))
         {
             if (DialogueUI.Instance != null)
             {
-                DialogueUI.Instance.Show("Марсик", "Поищи ключ на столе", null);
+                DialogueUI.Instance.Message("Марсик", "Поищи ключ на столе", null);
             }
         }
         else if (FlagManager.Instance.GetFlag("door_unlocked"))
         {
             if (DialogueUI.Instance != null)
             {
-                DialogueUI.Instance.Show("Марсик", "Я уж думал, что ты не справишься)", null);
+                DialogueUI.Instance.Message("Марсик", "Я уж думал, что ты не справишься)", null);
             }
 
         }

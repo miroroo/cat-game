@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class Door_loc2 : InteractableObject
 {
@@ -8,6 +9,8 @@ public class Door_loc2 : InteractableObject
 
     [Header("Next Scene")]
     [SerializeField] private string sceneToLoad = "NextLocation";
+
+    private bool waitingForDialogueEnd = false;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -20,22 +23,28 @@ public class Door_loc2 : InteractableObject
             return;
         }
 
-        // Если сейчас идёт диалог — не даём перейти
+        if (waitingForDialogueEnd)
+            return;
+
+        bool hasRequiredFlag = FlagManager.Instance.GetFlag(requiredFlag);
+
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
         {
-            Debug.Log("Диалог ещё идёт — переход запрещён");
-            return;
+            Debug.Log("Диалог идёт, жду окончания...");
+            waitingForDialogueEnd = true;
         }
-
-        bool canGoNext = FlagManager.Instance.GetFlag(requiredFlag);
-
-        Debug.Log(
-            $"Флаг {requiredFlag} = {canGoNext}"
-        );
-
-        if (canGoNext)
+        else
         {
-            Debug.Log($"Переход на сцену: {sceneToLoad}");
+            SceneManager.LoadScene(sceneToLoad);
+        }
+    }
+
+    private void Update()
+    {
+        if (waitingForDialogueEnd && DialogueManager.Instance != null && !DialogueManager.Instance.IsDialogueActive)
+        {
+            waitingForDialogueEnd = false;
+            Debug.Log("Диалог завершён, выполняю переход!");
             SceneManager.LoadScene(sceneToLoad);
         }
     }
