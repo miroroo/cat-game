@@ -24,29 +24,21 @@ public class MenuButton : MonoBehaviour
     }
     public void OnClick()
     {
-        musicSource.PlayOneShot(backgroundMusic);
-        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
-        {
-            Debug.Log("Диалог идёт — нельзя взаимодействовать");
-            return;
-        }
-
         StartCoroutine(LoadSceneWithSound());
     }
 
     private IEnumerator LoadSceneWithSound()
     {
+        if (backgroundMusic != null)
+            musicSource.PlayOneShot(backgroundMusic);
+
         yield return new WaitForSeconds(0.5f);
 
         if (DialogueUI.Instance != null)
-        {
             Destroy(DialogueUI.Instance.transform.root.gameObject);
-        }
 
         if (DialogueManager.Instance != null)
-        {
             Destroy(DialogueManager.Instance.gameObject);
-        }
 
         SceneLoader.Instance.LoadLocation(menuSceneName);
     }

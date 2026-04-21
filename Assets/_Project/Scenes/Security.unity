@@ -1112,7 +1112,7 @@ MonoBehaviour:
     \u041D\u0430 \u0441\u0442\u0435\u043D\u0435 \u0432\u0438\u0441\u0438\u0442 \u0447\u0451\u0440\u043D\u044B\u0439
     \u0434\u0438\u0441\u043A\u043E\u0432\u044B\u0439 \u0442\u0435\u043B\u0435\u0444\u043E\u043D. "
   autoStartDialogue: 1
-  startDelay: 0.1
+  startDelay: 3
 --- !u!1 &2141888326
 GameObject:
   m_ObjectHideFlags: 0

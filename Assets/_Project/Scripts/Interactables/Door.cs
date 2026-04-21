@@ -11,7 +11,7 @@ public class Door : MonoBehaviour
 
     private bool isProcessing = false;
 
-    private void OnCollisionStay2D(Collision2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         Debug.Log("Герой столкнулся со стеной.");
         if (isProcessing)
@@ -43,7 +43,7 @@ public class Door : MonoBehaviour
                 DialogueUI.Instance.Message("", unlockedMessage, null);
             }
 
-            Invoke(nameof(LoadNextScene), 0.2f);
+            Invoke(nameof(LoadNextScene), 1f);
         }
         else
         {

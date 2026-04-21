@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Timeline;
 using UnityEngine.UI;
 
 public class DialogueUI : MonoBehaviour
@@ -172,6 +173,11 @@ public class DialogueUI : MonoBehaviour
         else if (speaker == "Марсик")
         {
             leftCat.color = active;
+            rightSasha.color = darker;
+        }
+        else
+        {
+            leftCat.color = darker;
             rightSasha.color = darker;
         }
     }

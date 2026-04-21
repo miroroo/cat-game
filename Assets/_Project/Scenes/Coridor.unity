@@ -441,7 +441,7 @@ Transform:
   m_GameObject: {fileID: 505009676}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.44, y: -2.23, z: 0}
+  m_LocalPosition: {x: -5.44, y: -2.2, z: 0}
   m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -459,8 +459,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f944323427a58e40af6ff6b03aa1f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutoWalkCharacter
-  moveSpeed: 0.7
-  targetX: 9
+  moveSpeed: 0.4
+  targetX: 10
   animator: {fileID: 505009680}
   walkParameter: isMoving
 --- !u!95 &505009680
@@ -520,8 +520,8 @@ GameObject:
   - component: {fileID: 1000218896}
   - component: {fileID: 1000218898}
   m_Layer: 0
-  m_Name: Square
-  m_TagString: Untagged
+  m_Name: Door
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -576,7 +576,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.8238993, g: 0.10622596, b: 0.10622596, a: 0.7490196}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -594,8 +594,8 @@ Transform:
   m_GameObject: {fileID: 1000218892}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.15, y: -0.01, z: 0}
-  m_LocalScale: {x: 1.7141619, y: 12.693648, z: 1}
+  m_LocalPosition: {x: 7.7994, y: 0.13, z: 0}
+  m_LocalScale: {x: 4.664113, y: 12.693648, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -660,8 +660,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Door
   sceneToLoad: Security
   requiredFlag: talked_to_cat_loc2
-  lockedMessage: "\u0414\u0432\u0435\u0440\u044C \u0437\u0430\u043A\u0440\u044B\u0442\u0430"
-  unlockedMessage: "\u0414\u0432\u0435\u0440\u044C \u043E\u0442\u043A\u0440\u044B\u0442\u0430"
+  lockedMessage: 
+  unlockedMessage: 
 --- !u!1 &1353066387
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,7 +695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f944323427a58e40af6ff6b03aa1f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutoWalkCharacter
-  moveSpeed: 0.7
+  moveSpeed: 0.4
   targetX: 9
   animator: {fileID: 1353066389}
   walkParameter: isMoving
@@ -768,7 +768,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 2025807892626479040, guid: 2f40ab66d3b1eb048a4219210a512814, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -789,7 +789,7 @@ Transform:
   m_GameObject: {fileID: 1353066387}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.46, y: -2.03, z: 0}
+  m_LocalPosition: {x: -6.46, y: -2.04, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -825,7 +825,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
