@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 [DefaultExecutionOrder(-80)]
 public class DialogueManager : MonoBehaviour
@@ -10,6 +11,7 @@ public class DialogueManager : MonoBehaviour
     // Все реплики по id
     private Dictionary<int, DialogueRecord> dialogueById =
         new Dictionary<int, DialogueRecord>();
+    private Action onDialogueComplete;
 
     public bool IsDialogueActive { get; private set; }
 
@@ -57,10 +59,12 @@ public class DialogueManager : MonoBehaviour
     /// <summary>
     /// Запуск диалога с конкретного стартового узла
     /// </summary>
-    public void StartDialogue(int startId)
+    public void StartDialogue(int startId, Action completeCallback = null)
     {
         if (IsDialogueActive)
             return;
+
+        onDialogueComplete = completeCallback;
 
         if (dialogueById.Count == 0)
             LoadAllDialogues();
@@ -141,6 +145,9 @@ public class DialogueManager : MonoBehaviour
         }
 
         Debug.Log("Диалог завершён");
+
+        onDialogueComplete?.Invoke();
+        onDialogueComplete = null;
     }
 }
 

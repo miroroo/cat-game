@@ -69,7 +69,12 @@ public class Phone : InteractableObject
     {
         if (DialogueManager.Instance != null)
         {
-            DialogueManager.Instance.StartDialogue(56);
+            DialogueManager.Instance.StartDialogue(56, LoadNextScene);
         }
+    }
+
+    private void LoadNextScene()
+    {
+        SceneLoader.Instance.LoadLocation("Fiziks");
     }
 }
