@@ -133,11 +133,12 @@ public class DialogueManager : MonoBehaviour
 
     private void EndDialogue(DialogueRecord lastLine = null)
     {
+        IsDialogueActive = false;
+
         if (DialogueUI.Instance != null)
         {
             DialogueUI.Instance.Hide();
         }
-        IsDialogueActive = false;
 
         Debug.Log("Диалог завершён");
     }

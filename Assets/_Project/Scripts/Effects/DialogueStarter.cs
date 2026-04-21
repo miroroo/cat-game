@@ -3,8 +3,8 @@ using UnityEngine;
 public class SceneDialogueStarter : MonoBehaviour
 {
     [Header("Dialogue Settings")]
-    [SerializeField] private int dialogueId = 15;
-    [SerializeField] private string flagToSet = "talked_to_cat_loc2";
+    [SerializeField] private int dialogueId = 32;
+    [SerializeField] private string description = "";
     [SerializeField] private bool autoStartDialogue = true;
     [SerializeField] private float startDelay = 0.5f; // Задержка перед началом
 
@@ -25,13 +25,7 @@ public class SceneDialogueStarter : MonoBehaviour
 
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.Show(
-                "",
-                "Длинный коридор здания. Пол покрыт плиткой, местами на полу виднеются следы каких-то жидкостей. " +
-                "На стенах стенды с объявлениями:\n" +
-                "День открытых дверей, потерялась кошка...",
-                StartMainDialogue
-            );
+            DialogueUI.Instance.Show("", description, StartMainDialogue);
         }
         else
         {
@@ -44,13 +38,6 @@ public class SceneDialogueStarter : MonoBehaviour
         if (DialogueManager.Instance != null)
         {
             DialogueManager.Instance.StartDialogue(dialogueId);
-        }
-
-        // Устанавливаем флаг
-        if (FlagManager.Instance != null)
-        {
-            FlagManager.Instance.SetFlag(flagToSet, true);
-            Debug.Log($"Установлен флаг: {flagToSet}");
         }
     }
 }

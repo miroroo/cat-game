@@ -24,11 +24,22 @@ public class DialogueUI : MonoBehaviour
     private string fullText;              // полный текст текущей реплики
     private int currentPage = 0;          // текущая страница
     private int totalPages = 1;           // всего страниц
-    private const int CHARS_PER_PAGE = 150;
+    private const int CHARS_PER_PAGE = 250;
     private System.Action onContinue;
     private System.Action onPageComplete; // новое: вызывается когда все страницы показаны
 
-    
+    private AudioSource musicSource;
+    [SerializeField] private AudioClip backgroundMusic;
+
+    private void Start()
+    {
+        if (musicSource == null)
+        {
+            musicSource = gameObject.AddComponent<AudioSource>();
+        }
+        musicSource.playOnAwake = false;
+        musicSource.clip = backgroundMusic;
+    }
 
     private void Awake()
     {
@@ -90,6 +101,7 @@ public class DialogueUI : MonoBehaviour
     // Переопределяем обработку продолжения
     private void OnContinuePressed()
     {
+        musicSource.PlayOneShot(backgroundMusic);
         currentPage++;
 
         if (currentPage < totalPages)

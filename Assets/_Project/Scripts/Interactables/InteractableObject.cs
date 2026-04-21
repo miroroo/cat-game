@@ -7,6 +7,7 @@ public class InteractableObject : MonoBehaviour
     public string objectName;       // Можно оставить для отладки
     public int itemId;              // ID предмета в базе данных (0, если не предмет)
     private AudioSource musicSource;
+    [SerializeField] private AudioClip backgroundMusic;
     //[SerializeField] private GameObject highlightObject;
 
     void Update()
@@ -43,6 +44,19 @@ public class InteractableObject : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        musicSource = GetComponent<AudioSource>();
+
+        if (musicSource == null)
+        {
+            musicSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        musicSource.playOnAwake = false;
+        musicSource.clip = backgroundMusic;
+    }
+
     private void OnMouseEnter()
     {
         //highlightObject.SetActive(true);
@@ -58,8 +72,8 @@ public class InteractableObject : MonoBehaviour
         Debug.Log("Взаимодействие с " + objectName);
 
         // При нажатии на объект воспроизводится звук
-        musicSource = gameObject.AddComponent<AudioSource>();
-        
+        musicSource.PlayOneShot(backgroundMusic);
+
         // Если это предмет (itemId > 0)
         if (itemId > 0)
         {

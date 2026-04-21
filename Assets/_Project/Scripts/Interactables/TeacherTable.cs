@@ -1,16 +1,18 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class TeacherTable : InteractableObject
 {
     [Header("Dialogue Flag")]
-    [SerializeField] private string requiredFlag = "talked_to_cat_loc1";
+    [SerializeField] private string requiredFlag = "teacher_table";
 
     [Header("Scene")]
     public string sceneToLoad = "FindKey";
 
     public override void Interact()
     {
+        base.Interact();
         Debug.Log("Нажал на стол");
 
         if (FlagManager.Instance == null)
@@ -35,11 +37,18 @@ public class TeacherTable : InteractableObject
         if (isDialogueCompleted)
         {
             Debug.Log($"Загружаем сцену: {sceneToLoad}");
-            SceneManager.LoadScene(sceneToLoad);
+            StartCoroutine(LoadSceneWithSound());
         }
         else
         {
             Debug.Log("Сначала завершите нужный диалог");
         }
+    }
+
+    private IEnumerator LoadSceneWithSound()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        SceneManager.LoadScene(sceneToLoad);
     }
 }

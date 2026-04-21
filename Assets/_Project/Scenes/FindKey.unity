@@ -168,6 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
   objectName: 
   itemId: 0
+  backgroundMusic: {fileID: 0}
 --- !u!61 &160376864
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -454,6 +455,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
   objectName: 
   itemId: 0
+  backgroundMusic: {fileID: 0}
 --- !u!50 &359574451
 Rigidbody2D:
   serializedVersion: 5
@@ -635,6 +637,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
   objectName: 
   itemId: 0
+  backgroundMusic: {fileID: 0}
 --- !u!50 &557965179
 Rigidbody2D:
   serializedVersion: 5
@@ -779,6 +782,7 @@ GameObject:
   - component: {fileID: 768718284}
   - component: {fileID: 768718285}
   - component: {fileID: 768718286}
+  - component: {fileID: 768718287}
   m_Layer: 7
   m_Name: key
   m_TagString: Untagged
@@ -872,8 +876,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6877afc8a9bbfe44897dd91cd90bba09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyObject
-  objectName: 
+  objectName: "\u043A\u043B\u044E\u0447"
   itemId: 0
+  backgroundMusic: {fileID: 8300000, guid: 061fd0fa9cbbec74f8798800e80e58d7, type: 3}
   sceneToLoad: LectureHall
 --- !u!50 &768718285
 Rigidbody2D:
@@ -948,6 +953,103 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 6.77, y: 2.74}
   m_EdgeRadius: 0
+--- !u!82 &768718287
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768718280}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: 061fd0fa9cbbec74f8798800e80e58d7, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1745002239
 GameObject:
   m_ObjectHideFlags: 0
@@ -1194,6 +1296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
   objectName: 
   itemId: 0
+  backgroundMusic: {fileID: 0}
 --- !u!114 &1763139388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1208,6 +1311,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
   objectName: 
   itemId: 0
+  backgroundMusic: {fileID: 0}
 --- !u!61 &1763139389
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1475,6 +1579,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
   objectName: 
   itemId: 0
+  backgroundMusic: {fileID: 0}
 --- !u!114 &2091076473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1489,6 +1594,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
   objectName: 
   itemId: 0
+  backgroundMusic: {fileID: 0}
 --- !u!61 &2091076474
 BoxCollider2D:
   m_ObjectHideFlags: 0

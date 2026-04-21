@@ -9,6 +9,7 @@ public class KeyObject : InteractableObject
 
     public override void Interact()
     {
+        base.Interact();
         Debug.Log("Нажал на ключ");
 
         if (FlagManager.Instance == null)

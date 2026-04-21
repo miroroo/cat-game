@@ -29,6 +29,8 @@ public class AudioManager : MonoBehaviour
         musicSource.loop = true;
         musicSource.volume = musicVolume;
         musicSource.playOnAwake = true;
+
+        musicSource.Play();
     }
     
     // Опционально: методы паузы/продолжения

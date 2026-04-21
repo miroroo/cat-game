@@ -40,6 +40,7 @@ public class FlagManager : MonoBehaviour
 
     public bool GetFlag(string flagName)
     {
+
         return flags.TryGetValue(flagName, out int value) && value == 1;
     }
 
@@ -53,6 +54,7 @@ public class FlagManager : MonoBehaviour
 
         var existingFlag = db.Table<Flag>()
             .FirstOrDefault(f => f.flagName == flagName);
+        Debug.Log($"SET FLAG: {flagName} = {value}");
 
         if (existingFlag != null)
         {
