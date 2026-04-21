@@ -6,6 +6,7 @@ public class InteractableObject : MonoBehaviour
     private bool isMouseOver = false;
     public string objectName;       // Можно оставить для отладки
     public int itemId;              // ID предмета в базе данных (0, если не предмет)
+    private AudioSource musicSource;
     //[SerializeField] private GameObject highlightObject;
 
     void Update()
@@ -57,11 +58,7 @@ public class InteractableObject : MonoBehaviour
         Debug.Log("Взаимодействие с " + objectName);
 
         // При нажатии на объект воспроизводится звук
-        SoundOnClick sound = GetComponent<SoundOnClick>();
-        if (sound != null)
-        {
-            sound.PlaySound();
-        }
+        musicSource = gameObject.AddComponent<AudioSource>();
         
         // Если это предмет (itemId > 0)
         if (itemId > 0)

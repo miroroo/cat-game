@@ -674,7 +674,7 @@ GameObject:
   - component: {fileID: 734061192}
   - component: {fileID: 734061194}
   m_Layer: 3
-  m_Name: 5ef203b4-3a21-4484-ac9e-1da0f7f2af21_0
+  m_Name: tableminiapp1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
