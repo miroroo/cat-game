@@ -30,7 +30,7 @@ public class StartGameButton : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        SceneManager.LoadScene(defaultSceneName);
+        SceneManager.LoadScene(SceneLoader.Instance.GetLastScene());
     }
 
 }

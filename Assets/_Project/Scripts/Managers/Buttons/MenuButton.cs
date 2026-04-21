@@ -36,10 +36,18 @@ public class MenuButton : MonoBehaviour
 
     private IEnumerator LoadSceneWithSound()
     {
-        
-
         yield return new WaitForSeconds(0.5f);
 
-        SceneManager.LoadScene(menuSceneName);
+        if (DialogueUI.Instance != null)
+        {
+            Destroy(DialogueUI.Instance.transform.root.gameObject);
+        }
+
+        if (DialogueManager.Instance != null)
+        {
+            Destroy(DialogueManager.Instance.gameObject);
+        }
+
+        SceneLoader.Instance.LoadLocation(menuSceneName);
     }
 }

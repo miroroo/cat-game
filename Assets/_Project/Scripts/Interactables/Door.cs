@@ -5,66 +5,66 @@ public class Door : MonoBehaviour
 {
     [Header("Настройки двери")]
     [SerializeField] private string sceneToLoad = "Coridor";
-    [SerializeField] private string requiredFlag = ""; // Пусто = не нужен флаг
+    [SerializeField] private string requiredFlag = "";
     [SerializeField] private string lockedMessage = "Дверь закрыта";
     [SerializeField] private string unlockedMessage = "Дверь открыта";
-    
-    private bool waitingForDialogueEnd = false;
-    
-    private void OnCollisionEnter2D(Collision2D collision)
+
+    private bool isProcessing = false;
+
+    private void OnCollisionStay2D(Collision2D collision)
     {
+        Debug.Log("Герой столкнулся со стеной.");
+        if (isProcessing)
+            return;
+
         if (!collision.gameObject.CompareTag("Player"))
             return;
-        
+
         if (FlagManager.Instance == null)
         {
             Debug.LogError("FlagManager не найден!");
             return;
         }
-        
-        if (waitingForDialogueEnd)
+
+        if (DialogueManager.Instance != null &&
+            DialogueManager.Instance.IsDialogueActive)
             return;
-        
-        // Проверка на активный диалог
-        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
-        {
-            Debug.Log("Диалог идёт, жду окончания...");
-            waitingForDialogueEnd = true;
-            return;
-        }
-        
-        // Проверка на нужный флаг
-        bool hasRequiredFlag = string.IsNullOrEmpty(requiredFlag) || FlagManager.Instance.GetFlag(requiredFlag);
-        
+
+        bool hasRequiredFlag =
+            string.IsNullOrEmpty(requiredFlag) ||
+            FlagManager.Instance.GetFlag(requiredFlag);
+
         if (hasRequiredFlag)
         {
-            // Дверь открыта
+            isProcessing = true;
+
             if (!string.IsNullOrEmpty(unlockedMessage))
+            {
                 DialogueUI.Instance.Message("", unlockedMessage, null);
-            
-            SceneManager.LoadScene(sceneToLoad);
+            }
+
+            Invoke(nameof(LoadNextScene), 0.2f);
         }
         else
         {
-            // Дверь закрыта
-            DialogueUI.Instance.Message("", lockedMessage, null);
+            isProcessing = true;
+
+            if (!string.IsNullOrEmpty(lockedMessage))
+            {
+                DialogueUI.Instance.Message("", lockedMessage, null);
+            }
+
+            Invoke(nameof(ResetProcessing), 1f);
         }
     }
-    
-    private void Update()
+
+    private void LoadNextScene()
     {
-        if (waitingForDialogueEnd && DialogueManager.Instance != null && !DialogueManager.Instance.IsDialogueActive)
-        {
-            waitingForDialogueEnd = false;
-            Debug.Log("Диалог завершён, выполняю переход!");
-            
-            // Проверяем флаг после диалога
-            bool hasRequiredFlag = string.IsNullOrEmpty(requiredFlag) || FlagManager.Instance.GetFlag(requiredFlag);
-            
-            if (hasRequiredFlag)
-            {
-                SceneManager.LoadScene(sceneToLoad);
-            }
-        }
+        SceneManager.LoadScene(sceneToLoad);
+    }
+
+    private void ResetProcessing()
+    {
+        isProcessing = false;
     }
 }

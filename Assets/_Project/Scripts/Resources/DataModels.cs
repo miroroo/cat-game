@@ -42,12 +42,12 @@ public class InventorySlot
     public int slotIndex { get; set; }
 }
 
-[Table("PlayerProgress")]
-public class PlayerProgress
+[Table("Scenes")]
+public class Scenes
 {
     [PrimaryKey]
-    public int Id { get; set; } = 1; // всегда одна запись
-    public string currentLocation { get; set; }
+    public int id { get; set; } = 1; // всегда одна запись
+    public string last_scene { get; set; }
 }
 
 [Table("Actions")]

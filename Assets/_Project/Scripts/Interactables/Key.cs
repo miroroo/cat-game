@@ -19,7 +19,7 @@ public class KeyObject : InteractableObject
         }
 
         FlagManager.Instance.SetFlag("door_unlocked", true);
-        SceneManager.LoadScene(sceneToLoad);
+        SceneLoader.Instance.LoadLocation(sceneToLoad);
 
     }
 }

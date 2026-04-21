@@ -9,6 +9,7 @@ public class Phone : InteractableObject
 
     public override void Interact()
     {
+        base.Interact();
         if (FlagManager.Instance == null)
         {
             Debug.LogError("FlagManager не найден!");
@@ -28,12 +29,13 @@ public class Phone : InteractableObject
         // Первый звонок
         if (!firstCall)
         {
+
             FlagManager.Instance.SetFlag(requiredFlag1, true);
             Debug.Log("*** тишина ***");
             DialogueUI.Instance?.Message(
                 "",
                 "*** тишина ***",
-                () => Invoke(nameof(StartFirstCallDialogue), 3f)
+                () => Invoke(nameof(StartFirstCallDialogue), 2.5f)
             );
 
             return;
@@ -47,8 +49,8 @@ public class Phone : InteractableObject
         {
             DialogueUI.Instance?.Message(
                 "",
-                "*** UNKNOWN ERROR ***  *** UNKNOWN ERROR ***  *** UNKNOWN ERROR ***",
-                () => Invoke(nameof(StartSecondCallDialogue), 3f)
+                "<color=red>*** UNKNOWN ERROR ***  *** UNKNOWN ERROR ***  *** UNKNOWN ERROR ***</color>",
+                () => Invoke(nameof(StartSecondCallDialogue), 2.5f)
             );
 
             return;

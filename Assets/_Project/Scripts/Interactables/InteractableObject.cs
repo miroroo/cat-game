@@ -72,7 +72,10 @@ public class InteractableObject : MonoBehaviour
         Debug.Log("Взаимодействие с " + objectName);
 
         // При нажатии на объект воспроизводится звук
-        musicSource.PlayOneShot(backgroundMusic);
+        if (backgroundMusic != null)
+        {
+            musicSource.PlayOneShot(backgroundMusic);
+        }
 
         // Если это предмет (itemId > 0)
         if (itemId > 0)

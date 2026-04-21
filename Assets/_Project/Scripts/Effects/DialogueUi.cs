@@ -101,7 +101,7 @@ public class DialogueUI : MonoBehaviour
     // Переопределяем обработку продолжения
     private void OnContinuePressed()
     {
-        musicSource.PlayOneShot(backgroundMusic);
+        musicSource.PlayOneShot(backgroundMusic, 0.3f);
         currentPage++;
 
         if (currentPage < totalPages)
@@ -249,13 +249,19 @@ public class DialogueUI : MonoBehaviour
         onContinue = continueCallback;
         continueButton.onClick.RemoveAllListeners();
         continueButton.onClick.AddListener(OnContinuePressed);
+        // автоматически закрываем через 3 секунды
+        StartCoroutine(AutoCloseMessage());
     }
 
-    private void OnDestroy()
+    private IEnumerator AutoCloseMessage()
     {
-        if (Instance == this)
+        yield return new WaitForSeconds(2f);
+
+        Hide();
+
+        if (onContinue != null)
         {
-            Instance = null;
+            onContinue.Invoke();
         }
     }
 }
