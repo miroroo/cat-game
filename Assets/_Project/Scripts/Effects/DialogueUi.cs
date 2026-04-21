@@ -1,6 +1,8 @@
-using UnityEngine;
-using TMPro;
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class DialogueUI : MonoBehaviour
@@ -162,16 +164,48 @@ public class DialogueUI : MonoBehaviour
         }
     }
 
-    
+
 
     void Update()
     {
-        if (dialoguePanel.activeSelf && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)))
+        if (dialoguePanel.activeSelf)
         {
-            OnContinuePressed();
+            bool shouldContinue = false;
+
+            // Клавиши
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+            {
+                shouldContinue = true;
+            }
+
+            // Клик мыши по панели диалога (правильный способ для UI)
+            if (Input.GetMouseButtonDown(0))
+            {
+                // Создаём PointerEventData для проверки
+                PointerEventData pointerData = new PointerEventData(EventSystem.current);
+                pointerData.position = Input.mousePosition;
+
+                // Список объектов под мышью
+                List<RaycastResult> results = new List<RaycastResult>();
+                EventSystem.current.RaycastAll(pointerData, results);
+
+                // Проверяем, есть ли среди них наша панель
+                foreach (RaycastResult result in results)
+                {
+                    if (result.gameObject == dialoguePanel)
+                    {
+                        shouldContinue = true;
+                        break;
+                    }
+                }
+            }
+
+            if (shouldContinue)
+            {
+                OnContinuePressed();
+            }
         }
     }
-
     public void Hide()
     {
         if (dialoguePanel != null)
