@@ -17,14 +17,14 @@ public class Cat : InteractableObject
         {
             if (DialogueUI.Instance != null)
             {
-                DialogueUI.Instance.Message("Марсик", "Поищи ключ на столе", null);
+                DialogueUI.Instance.Show("Марсик", "Поищи ключ на столе", DialogueUI.Instance.Hide);
             }
         }
         else if (FlagManager.Instance.GetFlag("door_unlocked"))
         {
             if (DialogueUI.Instance != null)
             {
-                DialogueUI.Instance.Message("Марсик", "Я уж думал, что ты не справишься)", null);
+                DialogueUI.Instance.Show("Марсик", "Я уж думал, что ты не справишься)", DialogueUI.Instance.Hide);
             }
 
         }

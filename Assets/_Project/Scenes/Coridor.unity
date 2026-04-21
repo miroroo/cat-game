@@ -594,7 +594,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f944323427a58e40af6ff6b03aa1f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutoWalkCharacter
-  moveSpeed: 4
+  moveSpeed: 0.5
   doorTransform: {fileID: 1000218894}
   doorPosition: {x: -6.43, y: -2.7}
   animator: {fileID: 1353066389}
