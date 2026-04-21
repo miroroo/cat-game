@@ -56,6 +56,13 @@ public class InteractableObject : MonoBehaviour
     {
         Debug.Log("Взаимодействие с " + objectName);
 
+        // При нажатии на объект воспроизводится звук
+        SoundOnClick sound = GetComponent<SoundOnClick>();
+        if (sound != null)
+        {
+            sound.PlaySound();
+        }
+        
         // Если это предмет (itemId > 0)
         if (itemId > 0)
         {
