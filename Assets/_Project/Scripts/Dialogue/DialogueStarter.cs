@@ -3,7 +3,7 @@ using UnityEngine;
 public class SceneDialogueStarter : MonoBehaviour
 {
     [Header("Dialogue Settings")]
-    [SerializeField] private int dialogueId = 32;
+    [SerializeField] private int dialogueId = 0;
     [SerializeField] private string description = "";
     [SerializeField] private bool autoStartDialogue = true;
     [SerializeField] private float startDelay = 0.5f; // Задержка перед началом

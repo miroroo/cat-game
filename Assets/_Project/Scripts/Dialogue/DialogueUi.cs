@@ -63,9 +63,12 @@ public class DialogueUI : MonoBehaviour
 
         Hide();
 
+        //второй раз прописываешь тоже самое
         if (blocker != null)
             blocker.SetActive(false);
     }
+
+
     // Показывает текущую страницу текста
     private void ShowCurrentPage()
     {
@@ -78,11 +81,11 @@ public class DialogueUI : MonoBehaviour
             dialogueText.text = fullText.Substring(startIndex);
 
             // Меняем текст кнопки на "Продолжить" (переход к следующей реплике)
-            if (continueButton != null)
-            {
-                var buttonText = continueButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (buttonText != null) buttonText.text = "Продолжить →";
-            }
+            //if (continueButton != null)
+            //{
+            //    var buttonText = continueButton.GetComponentInChildren<TextMeshProUGUI>();
+            //    if (buttonText != null) buttonText.text = "Продолжить →";
+            //}
         }
         else
         {
@@ -91,11 +94,11 @@ public class DialogueUI : MonoBehaviour
             dialogueText.text = fullText.Substring(startIndex, length) + "...";
 
             // Меняем текст кнопки на "Далее" (следующая страница)
-            if (continueButton != null)
-            {
-                var buttonText = continueButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (buttonText != null) buttonText.text = "Далее ▼";
-            }
+            //if (continueButton != null)
+            //{
+            //    var buttonText = continueButton.GetComponentInChildren<TextMeshProUGUI>();
+            //    if (buttonText != null) buttonText.text = "Далее ▼";
+            //}
         }
     }
 
@@ -150,6 +153,7 @@ public class DialogueUI : MonoBehaviour
 
         dialogueText.textWrappingMode = TextWrappingModes.Normal;
         dialogueText.overflowMode = TextOverflowModes.Overflow;
+        //почитать
 
         continueButton.gameObject.SetActive(true);
 
