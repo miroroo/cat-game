@@ -51,6 +51,7 @@ public class DialogueManager : MonoBehaviour
         Debug.Log($"DialogueManager: загружено {allLines.Count} реплик.");
     }
 
+    //можно убрать
     public void ReloadDialogues()
     {
         LoadAllDialogues();
@@ -146,6 +147,7 @@ public class DialogueManager : MonoBehaviour
 
         Debug.Log("Диалог завершён");
 
+        //почитать
         onDialogueComplete?.Invoke();
         onDialogueComplete = null;
     }
