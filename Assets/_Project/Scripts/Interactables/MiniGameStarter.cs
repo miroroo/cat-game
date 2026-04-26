@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class TeacherTable : InteractableObject
+public class MiniGameStarter : InteractableObject
 {
     [Header("Dialogue Flag")]
     [SerializeField] private string requiredFlag = "teacher_table";
@@ -49,6 +49,6 @@ public class TeacherTable : InteractableObject
     {
         yield return new WaitForSeconds(0.5f);
 
-        SceneManager.LoadScene(sceneToLoad);
+        SceneLoader.Instance.LoadLocation(sceneToLoad);
     }
 }

@@ -9,22 +9,27 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private SpriteRenderer sprite;
 
+    private KeyCode leftKey;
+    private KeyCode rightKey;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
+
+        // Загружаем сохранённые клавиши из PlayerPrefs
+        leftKey = (KeyCode)PlayerPrefs.GetInt("LeftKey", (int)KeyCode.LeftArrow);
+        rightKey = (KeyCode)PlayerPrefs.GetInt("RightKey", (int)KeyCode.RightArrow);
     }
 
     void Update()
     {
+        movement = Vector2.zero;
 
-        movement.x = 0f;
-        movement.y = 0f;
-
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+        if (Input.GetKey(leftKey))
             movement.x = -1f;
-        else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(rightKey))
             movement.x = 1f;
 
         bool isMoving = movement.x != 0;
@@ -39,9 +44,8 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         if (movement.magnitude < 0.2f)
-        {
             movement = Vector2.zero;
-        }
+
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
     }
 }

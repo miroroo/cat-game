@@ -1,17 +1,21 @@
 using UnityEngine;
 
-
-
-public class AudioManager : MonoBehaviour
+public class MusicManager : MonoBehaviour
 {
-
     [Header("Фоновая музыка")]
     [SerializeField] private AudioClip backgroundMusic;
-    [SerializeField] [Range(0f, 1f)] private float musicVolume = 0.5f;
+    [SerializeField][Range(0f, 1f)] private float musicVolume = 0.5f;
 
-    private static AudioManager Instance;
+    // Singleton-экземпляр аудиоменеджера
+    private static MusicManager Instance;
+
+    // Источник воспроизведения фоновой музыки
     private AudioSource musicSource;
 
+    /// <summary>
+    /// Создаёт Singleton-экземпляр, настраивает AudioSource
+    /// и запускает фоновую музыку.
+    /// </summary>
     private void Awake()
     {
         // Реализация синглтона
@@ -20,8 +24,9 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
-        DontDestroyOnLoad(gameObject); // Не уничтожать при загрузке новой сцены
+        DontDestroyOnLoad(gameObject);
 
         // Создаём и настраиваем источник для музыки
         musicSource = gameObject.AddComponent<AudioSource>();
@@ -32,8 +37,14 @@ public class AudioManager : MonoBehaviour
 
         musicSource.Play();
     }
-    
-    // Опционально: методы паузы/продолжения
+
+    /// <summary>
+    /// Ставит воспроизведение музыки на паузу.
+    /// </summary>
     public void PauseMusic() => musicSource.Pause();
+
+    /// <summary>
+    /// Продолжает воспроизведение музыки после паузы.
+    /// </summary>
     public void ResumeMusic() => musicSource.UnPause();
 }

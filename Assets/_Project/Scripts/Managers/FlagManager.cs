@@ -5,10 +5,16 @@ using UnityEngine;
 [DefaultExecutionOrder(-90)]
 public class FlagManager : MonoBehaviour
 {
+    // Singleton-экземпляр менеджера флагов
     public static FlagManager Instance { get; private set; }
 
+    // Словарь для хранения флагов и числовых значений
     private Dictionary<string, int> flags = new Dictionary<string, int>();
 
+    /// <summary>
+    /// Создаёт Singleton-экземпляр и загружает флаги из базы данных.
+    /// Удаляет дубликат объекта при повторном создании.
+    /// </summary>
     private void Awake()
     {
         if (Instance == null)
@@ -23,6 +29,9 @@ public class FlagManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Загружает все флаги из базы данных в словарь flags.
+    /// </summary>
     private void LoadFlagsFromDB()
     {
         flags.Clear();
@@ -32,51 +41,62 @@ public class FlagManager : MonoBehaviour
 
         foreach (var flag in allFlags)
         {
-            flags[flag.flagName] = flag.flagValue; // теперь просто int
+            flags[flag.flagName] = flag.flagValue;
         }
 
         Debug.Log($"Загружено {flags.Count} флагов");
     }
 
+    /// <summary>
+    /// Возвращает bool-значение флага:
+    /// true если значение равно 1, иначе false.
+    /// </summary>
     public bool GetFlag(string flagName)
     {
-
-        return flags.TryGetValue(flagName, out int value) && value == 1;
+        return GetValue(flagName) == 1;
     }
 
+    /// <summary>
+    /// Устанавливает bool-значение флага,
+    /// преобразуя true/false в 1/0.
+    /// </summary>
     public void SetFlag(string flagName, bool value)
     {
-        int intValue = value ? 1 : 0;
-
-        flags[flagName] = intValue;
-
-        var db = DatabaseManager.Instance.Connection;
-
-        var existingFlag = db.Table<Flag>()
-            .FirstOrDefault(f => f.flagName == flagName);
+        SetValue(flagName, value ? 1 : 0);
         Debug.Log($"SET FLAG: {flagName} = {value}");
-
-        if (existingFlag != null)
-        {
-            existingFlag.flagValue = intValue;
-            db.Update(existingFlag);
-        }
-        else
-        {
-            db.Insert(new Flag
-            {
-                flagName = flagName,
-                flagValue = intValue
-            });
-        }
     }
 
+    /// <summary>
+    /// Возвращает числовое значение флага.
+    /// Если ключ не найден, возвращает 0.
+    /// </summary>
     public int GetInt(string key)
+    {
+        return GetValue(key);
+    }
+
+    /// <summary>
+    /// Устанавливает числовое значение флага
+    /// и сохраняет его в базе данных.
+    /// </summary>
+    public void SetInt(string key, int value)
+    {
+        SetValue(key, value);
+    }
+
+    /// <summary>
+    /// Универсальный метод получения значения из словаря.
+    /// </summary>
+    private int GetValue(string key)
     {
         return flags.TryGetValue(key, out int value) ? value : 0;
     }
 
-    public void SetInt(string key, int value)
+    /// <summary>
+    /// Универсальный метод сохранения значения
+    /// в словарь и базу данных.
+    /// </summary>
+    private void SetValue(string key, int value)
     {
         flags[key] = value;
 
@@ -92,10 +112,18 @@ public class FlagManager : MonoBehaviour
         }
         else
         {
-            db.Insert(new Flag { flagName = key, flagValue = value });
+            db.Insert(new Flag
+            {
+                flagName = key,
+                flagValue = value
+            });
         }
     }
 
+    /// <summary>
+    /// Сбрасывает все флаги в значение 0
+    /// в памяти и в базе данных.
+    /// </summary>
     public void ResetAllFlags()
     {
         var db = DatabaseManager.Instance.Connection;
@@ -116,6 +144,3 @@ public class FlagManager : MonoBehaviour
         Debug.Log("Все флаги сброшены");
     }
 }
-
-
-//объединить методы

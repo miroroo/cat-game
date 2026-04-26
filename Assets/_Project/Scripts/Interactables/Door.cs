@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Класс двери для перехода между сценами.
+/// Проверяет флаг доступа и загружает новую локацию.
+/// </summary>
 public class Door : MonoBehaviour
 {
     [Header("Настройки двери")]
@@ -9,11 +13,17 @@ public class Door : MonoBehaviour
     [SerializeField] private string lockedMessage = "Дверь закрыта";
     [SerializeField] private string unlockedMessage = "Дверь открыта";
 
+    // Защита от повторного срабатывания
     private bool isProcessing = false;
 
+    /// <summary>
+    /// Проверяет вход игрока в зону двери,
+    /// показывает сообщение и выполняет переход.
+    /// </summary>
     private void OnTriggerStay2D(Collider2D collision)
     {
         Debug.Log("Герой столкнулся со стеной.");
+
         if (isProcessing)
             return;
 
@@ -26,6 +36,7 @@ public class Door : MonoBehaviour
             return;
         }
 
+        // Не открываем дверь во время активного диалога
         if (DialogueManager.Instance != null &&
             DialogueManager.Instance.IsDialogueActive)
             return;
@@ -58,11 +69,17 @@ public class Door : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Загружает следующую сцену через SceneLoader.
+    /// </summary>
     private void LoadNextScene()
     {
-        SceneManager.LoadScene(sceneToLoad);
+        SceneLoader.Instance.LoadLocation(sceneToLoad);
     }
 
+    /// <summary>
+    /// Сбрасывает блокировку повторного срабатывания двери.
+    /// </summary>
     private void ResetProcessing()
     {
         isProcessing = false;

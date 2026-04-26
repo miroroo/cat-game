@@ -3,51 +3,68 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Timeline;
 using UnityEngine.UI;
 
+/// <summary>
+/// Управляет отображением диалогового окна:
+/// показывает реплики, переключает страницы текста и скрывает UI.
+/// </summary>
 public class DialogueUI : MonoBehaviour
 {
+    /// <summary>
+    /// Singleton-экземпляр для глобального доступа к UI диалогов.
+    /// </summary>
     public static DialogueUI Instance;
 
     [Header("UI")]
-    public GameObject dialoguePanel;
-    public TextMeshProUGUI speakerText;
-    public TextMeshProUGUI dialogueText;
-    public Button continueButton;
-    public Image leftCat;
-    public Image rightSasha;
-    public GameObject blocker;
+    public GameObject dialoguePanel;          // Основная панель диалога
+    public TextMeshProUGUI speakerText;       // Имя говорящего персонажа
+    public TextMeshProUGUI dialogueText;      // Текст реплики
+    public Button continueButton;             // Кнопка продолжения
+    public Image leftCat;                     // Спрайт кота слева
+    public Image rightSasha;                  // Спрайт Саши справа
+    public GameObject blocker;                // Блокирует взаимодействие с фоном
 
-    private float normalHeight;
-    private float smallHeight;
-    private RectTransform panelRect;
-    private string fullText;              // полный текст текущей реплики
-    private int currentPage = 0;          // текущая страница
-    private int totalPages = 1;           // всего страниц
-    private const int CHARS_PER_PAGE = 250;
-    private System.Action onContinue;
-    private System.Action onPageComplete; // новое: вызывается когда все страницы показаны
+    private float normalHeight;               // Обычная высота панели
+    private float smallHeight;                // Уменьшенная высота для коротких сообщений
+    private RectTransform panelRect;          // RectTransform панели
 
-    private AudioSource musicSource;
-    [SerializeField] private AudioClip backgroundMusic;
+    private string fullText;                  // Полный текст текущей реплики
+    private int currentPage = 0;              // Текущая страница текста
+    private int totalPages = 1;               // Общее количество страниц
 
+    private const int CHARS_PER_PAGE = 250;   // Максимум символов на одной странице
+
+    private System.Action onContinue;         // Действие после завершения реплики
+    private System.Action onPageComplete;     // Действие после показа всех страниц
+
+    private AudioSource musicSource;          // Источник звука
+    [SerializeField] private AudioClip backgroundMusic; // Звук переключения реплик
+
+    /// <summary>
+    /// Инициализация аудиоисточника.
+    /// </summary>
     private void Start()
     {
         if (musicSource == null)
         {
             musicSource = gameObject.AddComponent<AudioSource>();
         }
+
         musicSource.playOnAwake = false;
         musicSource.clip = backgroundMusic;
     }
 
+    /// <summary>
+    /// Singleton-инициализация и подготовка UI.
+    /// </summary>
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
 
+            // Сохраняем UI между сценами
             DontDestroyOnLoad(transform.root.gameObject);
 
             panelRect = dialoguePanel.GetComponent<RectTransform>();
@@ -57,78 +74,70 @@ public class DialogueUI : MonoBehaviour
         }
         else
         {
+            // Удаляем дубликат UI
             Destroy(transform.root.gameObject);
             return;
         }
 
         Hide();
 
-        //второй раз прописываешь тоже самое
+        // Отключаем блокировщик при старте
         if (blocker != null)
             blocker.SetActive(false);
     }
 
-
-    // Показывает текущую страницу текста
+    /// <summary>
+    /// Показывает текущую страницу длинной реплики.
+    /// Если текст длинный — разбивает его на части.
+    /// </summary>
     private void ShowCurrentPage()
     {
         int startIndex = currentPage * CHARS_PER_PAGE;
 
-        // Если это последняя страница или текст короче одной страницы
+        // Последняя страница — показываем остаток текста
         if (currentPage >= totalPages - 1)
         {
-            // Показываем остаток текста
             dialogueText.text = fullText.Substring(startIndex);
-
-            // Меняем текст кнопки на "Продолжить" (переход к следующей реплике)
-            //if (continueButton != null)
-            //{
-            //    var buttonText = continueButton.GetComponentInChildren<TextMeshProUGUI>();
-            //    if (buttonText != null) buttonText.text = "Продолжить →";
-            //}
         }
         else
         {
-            // Показываем часть текста
+            // Промежуточная страница — показываем часть текста
             int length = Mathf.Min(CHARS_PER_PAGE, fullText.Length - startIndex);
             dialogueText.text = fullText.Substring(startIndex, length) + "...";
-
-            // Меняем текст кнопки на "Далее" (следующая страница)
-            //if (continueButton != null)
-            //{
-            //    var buttonText = continueButton.GetComponentInChildren<TextMeshProUGUI>();
-            //    if (buttonText != null) buttonText.text = "Далее ▼";
-            //}
         }
     }
 
-    // Переопределяем обработку продолжения
+    /// <summary>
+    /// Обработка нажатия кнопки продолжения.
+    /// Либо переключает страницу, либо запускает следующую реплику.
+    /// </summary>
     private void OnContinuePressed()
     {
         musicSource.PlayOneShot(backgroundMusic, 0.3f);
+
         currentPage++;
 
         if (currentPage < totalPages)
         {
-            // Ещё есть страницы этой же реплики — показываем следующую
+            // Есть ещё страницы текущей реплики
             ShowCurrentPage();
         }
         else
         {
-            // Все страницы показаны — переходим к следующей реплике
+            // Реплика закончилась
             if (onContinue != null)
-            {
                 onContinue.Invoke();
-            }
             else
-            {
                 Hide();
-            }
         }
     }
 
+    /// <summary>
+    /// Показывает полноценный диалог с персонажем.
+    /// </summary>
     public void Show(string speaker, string text, System.Action continueCallback)
     {
+        // Возвращаем обычную высоту панели
         panelRect.sizeDelta = new Vector2(panelRect.sizeDelta.x, normalHeight);
 
         leftCat.enabled = true;
@@ -141,33 +150,36 @@ public class DialogueUI : MonoBehaviour
 
         speakerText.text = speaker;
 
-        // СОХРАНЯЕМ ПОЛНЫЙ ТЕКСТ
+        // Сохраняем полный текст
         fullText = text;
         currentPage = 0;
 
-        // ВЫЧИСЛЯЕМ КОЛИЧЕСТВО СТРАНИЦ
+        // Вычисляем количество страниц
         totalPages = Mathf.CeilToInt((float)fullText.Length / CHARS_PER_PAGE);
 
-        // ПОКАЗЫВАЕМ ПЕРВУЮ СТРАНИЦУ
+        // Показываем первую страницу
         ShowCurrentPage();
 
         dialogueText.textWrappingMode = TextWrappingModes.Normal;
         dialogueText.overflowMode = TextOverflowModes.Overflow;
-        //почитать
 
         continueButton.gameObject.SetActive(true);
 
         onContinue = continueCallback;
-        onPageComplete = null; // сбрасываем
+        onPageComplete = null;
 
         continueButton.onClick.RemoveAllListeners();
         continueButton.onClick.AddListener(OnContinuePressed);
     }
 
+    /// <summary>
+    /// Подсвечивает активного говорящего персонажа.
+    /// Неактивный персонаж затемняется.
+    /// </summary>
     void UpdateCharacters(string speaker)
     {
-        Color active = Color.white; // обычный цвет
-        Color darker = new Color(0.5f, 0.5f, 0.5f, 1f); // затемнённый (серый), непрозрачный
+        Color active = Color.white;
+        Color darker = new Color(0.5f, 0.5f, 0.5f, 1f);
 
         if (speaker == "Саша")
         {
@@ -186,32 +198,31 @@ public class DialogueUI : MonoBehaviour
         }
     }
 
-
-
+    /// <summary>
+    /// Отслеживает нажатия клавиш и клики по панели диалога.
+    /// Позволяет продолжать диалог без кнопки.
+    /// </summary>
     void Update()
     {
         if (dialoguePanel.activeSelf)
         {
             bool shouldContinue = false;
 
-            // Клавиши
+            // Продолжение по клавишам
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
             {
                 shouldContinue = true;
             }
 
-            // Клик мыши по панели диалога (правильный способ для UI)
+            // Продолжение по клику мыши по панели
             if (Input.GetMouseButtonDown(0))
             {
-                // Создаём PointerEventData для проверки
                 PointerEventData pointerData = new PointerEventData(EventSystem.current);
                 pointerData.position = Input.mousePosition;
 
-                // Список объектов под мышью
                 List<RaycastResult> results = new List<RaycastResult>();
                 EventSystem.current.RaycastAll(pointerData, results);
 
-                // Проверяем, есть ли среди них наша панель
                 foreach (RaycastResult result in results)
                 {
                     if (result.gameObject == dialoguePanel)
@@ -228,6 +239,10 @@ public class DialogueUI : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// Скрывает панель диалога и отключает blocker.
+    /// </summary>
     public void Hide()
     {
         if (dialoguePanel != null)
@@ -237,14 +252,15 @@ public class DialogueUI : MonoBehaviour
             blocker.SetActive(false);
     }
 
-
-
+    /// <summary>
+    /// Показывает короткое системное сообщение
+    /// без персонажей и с уменьшенной панелью.
+    /// </summary>
     public void Message(string speaker, string message, System.Action continueCallback)
     {
         dialoguePanel.SetActive(true);
 
-        panelRect.sizeDelta = new Vector2(panelRect.sizeDelta.x,smallHeight);
-
+        panelRect.sizeDelta = new Vector2(panelRect.sizeDelta.x, smallHeight);
 
         leftCat.enabled = false;
         rightSasha.enabled = false;
@@ -255,14 +271,21 @@ public class DialogueUI : MonoBehaviour
         dialogueText.textWrappingMode = TextWrappingModes.Normal;
         dialogueText.overflowMode = TextOverflowModes.Overflow;
 
-        continueButton.gameObject.SetActive(true); 
+        continueButton.gameObject.SetActive(true);
+
         onContinue = continueCallback;
+
         continueButton.onClick.RemoveAllListeners();
         continueButton.onClick.AddListener(OnContinuePressed);
-        // автоматически закрываем через 3 секунды
+
+        // Автоматически закрываем сообщение через 2 секунды
         StartCoroutine(AutoCloseMessage());
     }
 
+    /// <summary>
+    /// Автоматически закрывает короткое сообщение
+    /// и запускает следующее действие.
+    /// </summary>
     private IEnumerator AutoCloseMessage()
     {
         yield return new WaitForSeconds(2f);
@@ -275,3 +298,4 @@ public class DialogueUI : MonoBehaviour
         }
     }
 }
+

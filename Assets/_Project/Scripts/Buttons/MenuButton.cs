@@ -4,8 +4,7 @@ using System.Collections;
 
 public class MenuButton : MonoBehaviour
 {
-    [Header("Название сцены меню")]
-    [SerializeField] private string menuSceneName = "Start";
+    private string menuSceneName = "Start";
 
     private AudioSource musicSource;
     [SerializeField] private AudioClip backgroundMusic;
@@ -35,11 +34,8 @@ public class MenuButton : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         if (DialogueUI.Instance != null)
-            Destroy(DialogueUI.Instance.transform.root.gameObject);
+            DialogueUI.Instance.Hide();
 
-        if (DialogueManager.Instance != null)
-            Destroy(DialogueManager.Instance.gameObject);
-
-        SceneLoader.Instance.LoadLocation(menuSceneName);
+        SceneManager.LoadScene(menuSceneName);
     }
 }
