@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 movement;
     private Animator animator;
     private SpriteRenderer sprite;
+    private bool hasNotified = false;
 
     void Start()
     {
@@ -34,6 +35,16 @@ public class PlayerMovement : MonoBehaviour
             sprite.flipX = false;
         else if (movement.x < 0)
             sprite.flipX = true;
+        if (!hasNotified && movement.x != 0)
+        {
+            hasNotified = true;
+
+            var tutorial = FindObjectOfType<TutorialController>();
+            if (tutorial != null)
+            {
+                tutorial.OnPlayerMoved();
+            }
+        }
     }
 
     void FixedUpdate()
