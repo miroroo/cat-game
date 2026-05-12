@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Door
+  - Music
+  - SoundEffect
   layers:
   - Default
   - TransparentFX

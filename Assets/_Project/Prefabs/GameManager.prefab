@@ -48,7 +48,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c18cb7401127f946be9c776e2b4c971, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
-  UIPrefab: {fileID: 0}
 --- !u!114 &3202747598105158865
 MonoBehaviour:
   m_ObjectHideFlags: 0

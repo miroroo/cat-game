@@ -30,9 +30,15 @@ public class MenuButton : MonoBehaviour
     private IEnumerator LoadSceneWithSound()
     {
         if (backgroundMusic != null)
-            musicSource.PlayOneShot(backgroundMusic);
+        {
+            AudioSource tempSource = gameObject.AddComponent<AudioSource>();
+            tempSource.volume = AudioGraphicsSettings.GlobalSoundVolume;
+            tempSource.PlayOneShot(backgroundMusic);
+            Destroy(tempSource, backgroundMusic.length);
+        }
 
         yield return new WaitForSeconds(0.5f);
+
 
         if (DialogueUI.Instance != null)
             Destroy(DialogueUI.Instance.transform.root.gameObject);
