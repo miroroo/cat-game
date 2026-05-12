@@ -1,80 +1,39 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Phone : InteractableObject
 {
-    [Header("Dialogue Flag")]
-    [SerializeField] private string requiredFlag1 = "1_call";
-    [SerializeField] private string requiredFlag2 = "2_call_permit";
+    [Header("Phone UI")]
+    [SerializeField] private GameObject phonePanel;
 
     public override void Interact()
     {
         base.Interact();
-        if (FlagManager.Instance == null)
-        {
-            Debug.LogError("FlagManager не найден!");
-            return;
-        }
 
         if (DialogueManager.Instance != null &&
             DialogueManager.Instance.IsDialogueActive)
         {
-            Debug.Log("Диалог идёт — нельзя взаимодействовать");
+            Debug.Log("Диалог идёт — нельзя взаимодействовать с телефоном");
             return;
         }
 
-        bool firstCall = FlagManager.Instance.GetFlag(requiredFlag1);
-        Debug.Log($"Флаг {requiredFlag1} = {firstCall}");
+        OpenPhone();
+    }
 
-        // Первый звонок
-        if (!firstCall)
+    private void OpenPhone()
+    {
+        if (phonePanel == null)
         {
-
-            FlagManager.Instance.SetFlag(requiredFlag1, true);
-            Debug.Log("*** тишина ***");
-            DialogueUI.Instance?.Message(
-                "",
-                "*** тишина ***",
-                () => Invoke(nameof(StartFirstCallDialogue), 2.5f)
-            );
-
+            Debug.LogError("PhonePanel не назначен в Inspector!");
             return;
         }
 
-        bool secondCall = FlagManager.Instance.GetFlag(requiredFlag2);
-        Debug.Log($"Флаг {requiredFlag2} = {secondCall}");
-
-        // Если есть разрешение на второй звонок
-        if (secondCall)
-        {
-            DialogueUI.Instance?.Message(
-                "",
-                "<color=red>*** UNKNOWN ERROR ***  *** UNKNOWN ERROR ***  *** UNKNOWN ERROR ***</color>",
-                () => Invoke(nameof(StartSecondCallDialogue), 2.5f)
-            );
-
-            return;
-        }
+        phonePanel.SetActive(true);
+        Debug.Log("Телефон открыт крупным планом");
     }
 
-    private void StartFirstCallDialogue()
+    public void ClosePhone()
     {
-        if (DialogueManager.Instance != null)
-        {
-            DialogueManager.Instance.StartDialogue(54);
-        }
-    }
-
-    private void StartSecondCallDialogue()
-    {
-        if (DialogueManager.Instance != null)
-        {
-            DialogueManager.Instance.StartDialogue(56, LoadNextScene);
-        }
-    }
-
-    private void LoadNextScene()
-    {
-        SceneLoader.Instance.LoadLocation("Fiziks");
+        if (phonePanel != null)
+            phonePanel.SetActive(false);
     }
 }
