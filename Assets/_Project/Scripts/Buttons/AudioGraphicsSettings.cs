@@ -68,9 +68,9 @@ public class AudioGraphicsSettings : MonoBehaviour
 
     private void OnBrightnessChanged(float value)
     {
-        ApplyBrightness(value);
-        PlayerPrefs.SetFloat("Brightness", value);
-        PlayerPrefs.Save();
+        if (BrightnessManager.Instance != null)
+            BrightnessManager.Instance.SetBrightness(value);
+
         UpdateTexts();
     }
 
@@ -91,10 +91,9 @@ public class AudioGraphicsSettings : MonoBehaviour
         if (musicVolumeText != null && AudioManager.Instance != null)
             musicVolumeText.text = Mathf.RoundToInt(AudioManager.Instance.GetMusicVolume() * 100) + "%";
 
-        if (brightnessText != null)
+        if (brightnessText != null && BrightnessManager.Instance != null)
         {
-            float brightness = PlayerPrefs.GetFloat("Brightness", defaultBrightness);
-            brightnessText.text = Mathf.RoundToInt(brightness * 100) + "%";
+            brightnessText.text = Mathf.RoundToInt(BrightnessManager.Instance.GetBrightness() * 100) + "%";
         }
     }
 
