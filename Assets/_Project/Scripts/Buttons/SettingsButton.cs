@@ -4,24 +4,10 @@ using System.Collections;
 
 public class SettingsButton : MonoBehaviour
 {
-    [Header("Название сцены меню")]
-    [SerializeField] private string menuSceneName = "Settings";
+    [Header("Название сцены")]
+    [SerializeField] private string settingsSceneName = "Settings";
+    [SerializeField] private AudioClip clickSound;
 
-    private AudioSource musicSource;
-    [SerializeField] private AudioClip backgroundMusic;
-    private void Start()
-    {
-        musicSource = GetComponent<AudioSource>();
-
-        if (musicSource == null)
-        {
-            musicSource = gameObject.AddComponent<AudioSource>();
-        }
-        musicSource.playOnAwake = false;
-        musicSource.clip = backgroundMusic;
-    }
-
-    // Этот метод вызывается при нажатии на кнопку
     public void OnClick()
     {
         StartCoroutine(LoadSceneWithSound());
@@ -29,10 +15,18 @@ public class SettingsButton : MonoBehaviour
 
     private IEnumerator LoadSceneWithSound()
     {
-        musicSource.PlayOneShot(backgroundMusic);
+        // Проигрываем звук через глобальный менеджер
+        if (clickSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySound(clickSound);
+            yield return new WaitForSeconds(0.3f);
+        }
+        else
+        {
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(0.5f);
-
-        SceneManager.LoadScene(menuSceneName);
+        // Загружаем сцену настроек
+        SceneManager.LoadScene(settingsSceneName);
     }
 }

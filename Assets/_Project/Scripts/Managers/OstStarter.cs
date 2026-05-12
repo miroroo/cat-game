@@ -7,7 +7,6 @@ public class OstStarter : MonoBehaviour
     [SerializeField][Range(0f, 1f)] private float musicVolume = 0.5f;
 
     public static OstStarter Instance { get; private set; }
-    private AudioSource musicSource;
 
     private void Awake()
     {
@@ -19,28 +18,10 @@ public class OstStarter : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        musicSource = gameObject.AddComponent<AudioSource>();
-        musicSource.clip = backgroundMusic;
-        musicSource.loop = true;
-        musicSource.volume = musicVolume;
-        musicSource.playOnAwake = true;
-        musicSource.tag = "Music"; // Добавляем тег Music
-
-        musicSource.Play();
-    }
-
-    public void PauseMusic() => musicSource.Pause();
-    public void ResumeMusic() => musicSource.UnPause();
-
-    // Метод для установки громкости из настроек
-    public void SetMusicVolume(float volume)
-    {
-        if (musicSource != null)
+        // Передаём музыку в AudioManager
+        if (AudioManager.Instance != null)
         {
-            musicSource.volume = volume;
+            AudioManager.Instance.SetMusic(backgroundMusic, musicVolume);
         }
     }
-
-    // Метод для получения текущей громкости
-    public float GetMusicVolume() => musicSource != null ? musicSource.volume : 0f;
 }

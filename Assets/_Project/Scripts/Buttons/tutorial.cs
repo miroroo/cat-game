@@ -6,21 +6,7 @@ public class TutorialButton : MonoBehaviour
 {
     [Header("Название сцены обучения")]
     [SerializeField] private string tutorialSceneName = "Tutorial";
-
-    private AudioSource musicSource;
     [SerializeField] private AudioClip clickSound;
-
-    private void Start()
-    {
-        musicSource = GetComponent<AudioSource>();
-
-        if (musicSource == null)
-        {
-            musicSource = gameObject.AddComponent<AudioSource>();
-        }
-        musicSource.playOnAwake = false;
-        musicSource.clip = clickSound;
-    }
 
     // Этот метод вызывается при нажатии на кнопку обучения
     public void OnClick()
@@ -30,16 +16,18 @@ public class TutorialButton : MonoBehaviour
 
     private IEnumerator LoadSceneWithSound()
     {
-        if (clickSound != null)
+        // Проигрываем звук через глобальный менеджер
+        if (clickSound != null && AudioManager.Instance != null)
         {
-            musicSource.PlayOneShot(clickSound);
-            yield return new WaitForSeconds(0.5f);
+            AudioManager.Instance.PlaySound(clickSound);
+            yield return new WaitForSeconds(0.3f);
         }
         else
         {
-            yield return null; // Ждём один кадр, если звука нет
+            yield return null;
         }
 
+        // Загружаем сцену обучения
         SceneManager.LoadScene(tutorialSceneName);
     }
 }

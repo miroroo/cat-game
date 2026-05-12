@@ -6,19 +6,8 @@ public class StartGameButton : MonoBehaviour
 {
     [Header("Названия сцен")]
     [SerializeField] private string defaultSceneName = "LectureHall"; // Сцена по умолчанию
+    [SerializeField] private AudioClip clickSound;
 
-    private AudioSource musicSource;
-    [SerializeField] private AudioClip backgroundMusic;
-
-    private void Start()
-    {
-        if (musicSource == null)
-        {
-            musicSource = gameObject.AddComponent<AudioSource>();
-        }
-        musicSource.playOnAwake = false;
-        musicSource.clip = backgroundMusic;
-    }
     public void OnClick()
     {
         StartCoroutine(LoadSceneWithSound());
@@ -26,11 +15,25 @@ public class StartGameButton : MonoBehaviour
 
     private IEnumerator LoadSceneWithSound()
     {
-        musicSource.PlayOneShot(backgroundMusic);
+        // Проигрываем звук через глобальный менеджер
+        if (clickSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySound(clickSound);
+            yield return new WaitForSeconds(0.3f);
+        }
+        else
+        {
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(0.5f);
+        // Загружаем последнюю сцену или сцену по умолчанию
+        string sceneToLoad = SceneLoader.Instance != null ? SceneLoader.Instance.GetLastScene() : defaultSceneName;
 
-        SceneManager.LoadScene(SceneLoader.Instance.GetLastScene());
+        if (string.IsNullOrEmpty(sceneToLoad))
+        {
+            sceneToLoad = defaultSceneName;
+        }
+
+        SceneManager.LoadScene(sceneToLoad);
     }
-
 }

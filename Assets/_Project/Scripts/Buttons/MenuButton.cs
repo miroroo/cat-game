@@ -6,22 +6,8 @@ public class MenuButton : MonoBehaviour
 {
     [Header("Название сцены меню")]
     [SerializeField] private string menuSceneName = "Start";
+    [SerializeField] private AudioClip clickSound;
 
-    private AudioSource musicSource;
-    [SerializeField] private AudioClip backgroundMusic;
-
-    // Этот метод вызывается при нажатии на кнопку
-    private void Start()
-    {
-        musicSource = GetComponent<AudioSource>();
-
-        if (musicSource == null)
-        {
-            musicSource = gameObject.AddComponent<AudioSource>();
-        }
-        musicSource.playOnAwake = false;
-        musicSource.clip = backgroundMusic;
-    }
     public void OnClick()
     {
         StartCoroutine(LoadSceneWithSound());
@@ -29,23 +15,28 @@ public class MenuButton : MonoBehaviour
 
     private IEnumerator LoadSceneWithSound()
     {
-        if (backgroundMusic != null)
+        // Проигрываем звук через глобальный менеджер
+        if (clickSound != null && AudioManager.Instance != null)
         {
-            AudioSource tempSource = gameObject.AddComponent<AudioSource>();
-            tempSource.volume = AudioGraphicsSettings.GlobalSoundVolume;
-            tempSource.PlayOneShot(backgroundMusic);
-            Destroy(tempSource, backgroundMusic.length);
+            AudioManager.Instance.PlaySound(clickSound);
+            yield return new WaitForSeconds(0.3f);
+        }
+        else
+        {
+            yield return null;
         }
 
-        yield return new WaitForSeconds(0.5f);
-
-
+        // Очистка диалогов
         if (DialogueUI.Instance != null)
             Destroy(DialogueUI.Instance.transform.root.gameObject);
 
         if (DialogueManager.Instance != null)
             Destroy(DialogueManager.Instance.gameObject);
 
-        SceneLoader.Instance.LoadLocation(menuSceneName);
+        // Загрузка сцены
+        if (SceneLoader.Instance != null)
+            SceneLoader.Instance.LoadLocation(menuSceneName);
+        else
+            SceneManager.LoadScene(menuSceneName);
     }
 }

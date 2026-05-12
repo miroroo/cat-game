@@ -1,14 +1,11 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class InteractableObject : MonoBehaviour
 {
     private bool isMouseOver = false;
-    public string objectName;       // Можно оставить для отладки
-    public int itemId;              // ID предмета в базе данных (0, если не предмет)
-    private AudioSource musicSource;
-    [SerializeField] private AudioClip backgroundMusic;
-    //[SerializeField] private GameObject highlightObject;
+    public string objectName;
+    public int itemId;
+    [SerializeField] private AudioClip interactionSound;
 
     void Update()
     {
@@ -16,9 +13,7 @@ public class InteractableObject : MonoBehaviour
             return;
 
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
         LayerMask mask = LayerMask.GetMask("interactables");
-
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero, Mathf.Infinity, mask);
 
         if (hit.collider != null && hit.collider.gameObject == gameObject)
@@ -46,44 +41,27 @@ public class InteractableObject : MonoBehaviour
 
     private void Start()
     {
-        musicSource = GetComponent<AudioSource>();
-
-        if (musicSource == null)
-        {
-            musicSource = gameObject.AddComponent<AudioSource>();
-        }
-
-        musicSource.playOnAwake = false;
-        musicSource.clip = backgroundMusic;
+        // Не нужно создавать AudioSource, звуки идут через AudioManager
     }
 
-    private void OnMouseEnter()
-    {
-        //highlightObject.SetActive(true);
-    }
-
-    private void OnMouseExit()
-    {
-        //highlightObject.SetActive(false);
-    }
+    private void OnMouseEnter() { }
+    private void OnMouseExit() { }
 
     public virtual void Interact()
     {
         Debug.Log("Взаимодействие с " + objectName);
 
-        // При нажатии на объект воспроизводится звук
-        if (backgroundMusic != null)
+        // Проигрываем звук через глобальный менеджер
+        if (interactionSound != null && AudioManager.Instance != null)
         {
-            musicSource.PlayOneShot(backgroundMusic);
+            AudioManager.Instance.PlaySound(interactionSound);
         }
 
-        // Если это предмет (itemId > 0)
         if (itemId > 0)
         {
             Item item = ItemDatabase.GetItem(itemId);
             if (item != null)
             {
-                // Проверим, можно ли взять предмет (isTakeable)
                 if (item.isTakeable)
                 {
                     gameObject.SetActive(false);

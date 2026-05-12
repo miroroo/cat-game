@@ -105,17 +105,20 @@ public class DialogueUI : MonoBehaviour
     // Переопределяем обработку продолжения
     private void OnContinuePressed()
     {
-        musicSource.PlayOneShot(backgroundMusic, 0.3f);
+        // Используем AudioManager вместо прямого вызова
+        if (backgroundMusic != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySound(backgroundMusic, 0.3f);
+        }
+
         currentPage++;
 
         if (currentPage < totalPages)
         {
-            // Ещё есть страницы этой же реплики — показываем следующую
             ShowCurrentPage();
         }
         else
         {
-            // Все страницы показаны — переходим к следующей реплике
             if (onContinue != null)
             {
                 onContinue.Invoke();
