@@ -42,7 +42,7 @@ public class PhoneDialer : MonoBehaviour
         if (DialogueManager.Instance != null &&
             DialogueManager.Instance.IsDialogueActive)
         {
-            Debug.Log("Р”РёР°Р»РѕРі СѓР¶Рµ РёРґС‘С‚ вЂ” Р·РІРѕРЅРёС‚СЊ РЅРµР»СЊР·СЏ");
+            Debug.Log("Диалог уже идёт — звонить нельзя");
             return;
         }
 
@@ -65,7 +65,7 @@ public class PhoneDialer : MonoBehaviour
     {
         if (FlagManager.Instance == null)
         {
-            Debug.LogError("FlagManager РЅРµ РЅР°Р№РґРµРЅ!");
+            Debug.LogError("FlagManager не найден!");
             return;
         }
 
@@ -73,7 +73,7 @@ public class PhoneDialer : MonoBehaviour
 
         if (firstCallDone)
         {
-            DialogueUI.Instance?.Message("", "*** РЅРёРєС‚Рѕ РЅРµ РѕС‚РІРµС‡Р°РµС‚ ***");
+            DialogueUI.Instance?.Message("", "*** никто не отвечает ***", null);
             return;
         }
 
@@ -81,7 +81,7 @@ public class PhoneDialer : MonoBehaviour
 
         DialogueUI.Instance?.Message(
             "",
-            "*** С‚РёС€РёРЅР° ***",
+            "*** тишина ***",
             () => Invoke(nameof(StartFirstCallDialogue), 2.5f)
         );
     }
@@ -90,7 +90,7 @@ public class PhoneDialer : MonoBehaviour
     {
         if (FlagManager.Instance == null)
         {
-            Debug.LogError("FlagManager РЅРµ РЅР°Р№РґРµРЅ!");
+            Debug.LogError("FlagManager не найден!");
             return;
         }
 
@@ -98,7 +98,7 @@ public class PhoneDialer : MonoBehaviour
 
         if (!secondCallAllowed)
         {
-            DialogueUI.Instance?.Message("", "*** РЅРѕРјРµСЂ РЅРµРґРѕСЃС‚СѓРїРµРЅ ***");
+            DialogueUI.Instance?.Message("", "*** номер недоступен ***", null);
             return;
         }
 
@@ -111,7 +111,7 @@ public class PhoneDialer : MonoBehaviour
 
     private void WrongNumber()
     {
-        DialogueUI.Instance?.Message("", "*** РЅРѕРјРµСЂ РЅРµ РѕС‚РІРµС‡Р°РµС‚ ***");
+        DialogueUI.Instance?.Message("", "*** номер не отвечает ***", null);
     }
 
     private void StartFirstCallDialogue()
