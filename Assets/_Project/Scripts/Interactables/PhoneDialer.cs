@@ -73,7 +73,7 @@ public class PhoneDialer : MonoBehaviour
 
         if (firstCallDone)
         {
-            DialogueUI.Instance?.Message("", "*** никто не отвечает ***", null);
+            DialogueUI.Instance?.Message("", "*** никто не отвечает ***");
             return;
         }
 
@@ -98,7 +98,7 @@ public class PhoneDialer : MonoBehaviour
 
         if (!secondCallAllowed)
         {
-            DialogueUI.Instance?.Message("", "*** номер недоступен ***", null);
+            DialogueUI.Instance?.Message("", "*** номер недоступен ***");
             return;
         }
 
@@ -111,7 +111,7 @@ public class PhoneDialer : MonoBehaviour
 
     private void WrongNumber()
     {
-        DialogueUI.Instance?.Message("", "*** номер не отвечает ***", null);
+        DialogueUI.Instance?.Message("", "*** номер не отвечает ***");
     }
 
     private void StartFirstCallDialogue()
