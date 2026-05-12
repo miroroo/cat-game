@@ -117,7 +117,7 @@ public class PhoneDialer : MonoBehaviour
 
     private void SubsequentCall()
     {
-        DialogueUI.Instance?.Message("", "*** фраза из бд ***", null);
+        DialogueUI.Instance?.Message("", "*** скажи 300 ***", null);
     }
 
     private void StartFirstCallDialogue()

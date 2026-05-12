@@ -1,163 +1,131 @@
+﻿using UnityEngine;
 using System.Collections;
-using UnityEngine;
 
 public class TutorialController : MonoBehaviour
 {
-    [Header("Dialogue IDs")]
-    public int talkDialogueId = 2;
-
     private bool moved = false;
-    private bool dialogueFinished = false;
-
     private int step = 0;
 
-    private bool tutorialCompleted = false;
-
-    IEnumerator Start()
+    void Start()
     {
-        // ��� 1 ���� ����� DialogueUI ����� ���������
-        yield return null;
+        Debug.Log("=== TUTORIAL START ===");
 
-        // ���� �������� ��� ���������
-        if (PlayerPrefs.GetInt("tutorial_completed", 0) == 1)
+        if (FlagManager.Instance.GetFlag("tutorial"))
         {
-            Debug.Log("Tutorial already completed");
-
-            gameObject.SetActive(false);
-            yield break;
+            enabled = false;
+            return;
         }
 
-        // ��������� ������� ������
+        // Запускаем корутину, которая ждёт появления DialogueUI
+        StartCoroutine(WaitForDialogueUIAndStart());
+    }
+
+    IEnumerator WaitForDialogueUIAndStart()
+    {
+        Debug.Log("Ожидание DialogueUI...");
+
         if (DialogueUI.Instance == null)
         {
-            Debug.LogError("DialogueUI.Instance == NULL");
+            Debug.LogError("DialogueUI.Instance не появился! Проверьте, что на сцене есть объект с DialogueUI");
             yield break;
         }
 
-        if (DialogueManager.Instance == null)
-        {
-            Debug.LogError("DialogueManager.Instance == NULL");
-            yield break;
-        }
+        Debug.Log("DialogueUI.Instance найден!");
+
+        // Небольшая задержка для уверенности
+        yield return new WaitForSeconds(0.2f);
 
         StartMoveStep();
     }
 
     void Update()
     {
-        if (tutorialCompleted)
-            return;
-
-        // SKIP
+        // Пропуск туториала по Escape
         if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Debug.Log("Tutorial skipped");
-
-            CompleteTutorial();
-            return;
-        }
-
-        // ��� 1 -> ��� 2
-        if (step == 0 && moved)
-        {
-            StartDialogueStep();
-        }
-
-        // ����� ��������
-        if (step == 1 && dialogueFinished)
         {
             CompleteTutorial();
         }
     }
 
-    // ==================================================
-    // ��� 1 � ��������
-    // ==================================================
-
     void StartMoveStep()
     {
-        Debug.Log("Tutorial Step 1: Move");
-
         step = 0;
+        moved = false;
 
+        Debug.Log("StartMoveStep - показываем сообщение");
+
+        if (DialogueUI.Instance == null)
+        {
+            Debug.LogError("DialogueUI.Instance = NULL!");
+            return;
+        }
+
+        // Показываем сообщение
         DialogueUI.Instance.Message(
-            "",
-            "��������� A/D ��� ������� ����� ���������",
+            "Обучение",
+            "Используй клавиши A/D или стрелки ← → чтобы двигаться",
             null
         );
+
+        Debug.Log("Сообщение отправлено");
     }
 
     public void OnPlayerMoved()
     {
-        if (step != 0)
-            return;
+        Debug.Log($"OnPlayerMoved вызван! step={step}, moved={moved}");
 
-        if (moved)
-            return;
-
-        moved = true;
-
-        Debug.Log("Player moved");
+        if (step == 0 && !moved)
+        {
+            moved = true;
+            Debug.Log("Игрок пошевелился - запускаем диалог");
+            StartDialogueStep();
+        }
     }
-
-    // ==================================================
-    // ��� 2 � ������
-    // ==================================================
 
     void StartDialogueStep()
     {
-        Debug.Log("Tutorial Step 2: Dialogue");
-
         step = 1;
+        Debug.Log("StartDialogueStep - запуск диалога");
 
-        dialogueFinished = false;
+        if (DialogueUI.Instance == null)
+        {
+            Debug.LogError("DialogueUI.Instance не найден!");
+            CompleteTutorial();
+            return;
+        }
 
-        DialogueManager.Instance.StartDialogue(
-            talkDialogueId,
+        // Закрываем предыдущее сообщение если открыто
+        DialogueUI.Instance.Hide();
+
+        // Запускаем полноценный диалог
+        DialogueUI.Instance.Show(
+            "Саша",
+            "Отлично! Ты научился двигаться! Теперь научимся переключать диалог\nНажки пробел, чтобы увидеть следующую фразу.",
             OnDialogueFinished
         );
     }
 
     void OnDialogueFinished()
     {
-        Debug.Log("Tutorial dialogue finished");
-
-        dialogueFinished = true;
+        Debug.Log("Диалог завершён");
+        DialogueUI.Instance.Show(
+            "Саша",
+            "Чтобы взаимодействовать с предметами нажми на них!\n" +
+            "Нажми пкм на окно.",
+            CompleteTutorial
+        );
     }
-
-    // ==================================================
-    // ����������
-    // ==================================================
 
     void CompleteTutorial()
     {
-        if (tutorialCompleted)
-            return;
-
-        tutorialCompleted = true;
-
-        PlayerPrefs.SetInt("tutorial_completed", 1);
-        PlayerPrefs.Save();
-
-        Debug.Log("Tutorial completed");
+        Debug.Log("Туториал завершен!");
+        FlagManager.Instance.SetFlag("tutorial", true);
 
         if (DialogueUI.Instance != null)
         {
             DialogueUI.Instance.Hide();
         }
 
-        gameObject.SetActive(false);
-    }
-
-    // ==================================================
-    // ��� �����
-    // ==================================================
-
-    [ContextMenu("Reset Tutorial")]
-    public void ResetTutorial()
-    {
-        PlayerPrefs.DeleteKey("tutorial_completed");
-
-        Debug.Log("Tutorial reset");
+        enabled = false;
     }
 }
