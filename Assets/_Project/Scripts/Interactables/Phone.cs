@@ -4,6 +4,7 @@ public class Phone : InteractableObject
 {
     [Header("Phone UI")]
     [SerializeField] private GameObject phonePanel;
+    public GameObject blocker;
 
     public override void Interact()
     {
@@ -28,6 +29,7 @@ public class Phone : InteractableObject
         }
 
         phonePanel.SetActive(true);
+        blocker.SetActive(true);
         Debug.Log("Телефон открыт крупным планом");
     }
 
@@ -35,5 +37,7 @@ public class Phone : InteractableObject
     {
         if (phonePanel != null)
             phonePanel.SetActive(false);
+        if (blocker != null)
+            blocker.SetActive(false);
     }
 }

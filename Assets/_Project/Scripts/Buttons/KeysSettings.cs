@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class KeysSettings : MonoBehaviour
 {
@@ -13,6 +14,11 @@ public class KeysSettings : MonoBehaviour
     [SerializeField] private Text leftButtonText;
     [SerializeField] private Text rightButtonText;
     [SerializeField] private Text skipButtonText;
+
+    [Header("Отображение текущих клавиш")]
+    [SerializeField] private TextMeshProUGUI currentKeysDisplay;
+    // Или для обычного Text:
+    // [SerializeField] private Text currentKeysDisplay;
 
     [Header("Клавиши по умолчанию")]
     [SerializeField] private KeyCode defaultLeftKey = KeyCode.LeftArrow;
@@ -31,6 +37,7 @@ public class KeysSettings : MonoBehaviour
     {
         LoadKeyBindings();
         UpdateButtonTexts();
+        UpdateKeysDisplay();
         SetupButtonListeners();
     }
 
@@ -73,6 +80,16 @@ public class KeysSettings : MonoBehaviour
             skipButtonText.text = GetKeyDisplayName(currentSkipKey);
     }
 
+    private void UpdateKeysDisplay()
+    {
+        if (currentKeysDisplay != null)
+        {
+            currentKeysDisplay.text = $"Влево: {GetKeyDisplayName(currentLeftKey)}\n" +
+                                     $"Вправо: {GetKeyDisplayName(currentRightKey)}\n" +
+                                     $"Пропуск: {GetKeyDisplayName(currentSkipKey)}";
+        }
+    }
+
     private string GetKeyDisplayName(KeyCode key)
     {
         switch (key)
@@ -108,7 +125,6 @@ public class KeysSettings : MonoBehaviour
         currentAction = actionName;
         currentButton = button;
 
-        // Меняем текст на кнопке
         Text buttonText = null;
         switch (actionName)
         {
@@ -130,21 +146,17 @@ public class KeysSettings : MonoBehaviour
 
         Debug.Log($"Ожидание нажатия клавиши для действия: {actionName}");
 
-        // Запускаем корутину для ожидания нажатия
         StartCoroutine(WaitForKeyPress());
     }
 
     private IEnumerator WaitForKeyPress()
     {
-        // Ждём, пока игрок нажмёт клавишу
         while (isRebinding)
         {
-            // Проверяем все возможные клавиши
             foreach (KeyCode key in System.Enum.GetValues(typeof(KeyCode)))
             {
                 if (Input.GetKeyDown(key))
                 {
-                    // Пропускаем клавиши мыши
                     if (key == KeyCode.Mouse0 || key == KeyCode.Mouse1 || key == KeyCode.Mouse2 ||
                         key == KeyCode.Mouse3 || key == KeyCode.Mouse4 || key == KeyCode.Mouse5)
                     {
@@ -152,7 +164,6 @@ public class KeysSettings : MonoBehaviour
                         break;
                     }
 
-                    // Пропускаем клавиши-модификаторы (если используете отдельно)
                     if (key == KeyCode.LeftShift || key == KeyCode.RightShift ||
                         key == KeyCode.LeftControl || key == KeyCode.RightControl ||
                         key == KeyCode.LeftAlt || key == KeyCode.RightAlt)
@@ -161,12 +172,11 @@ public class KeysSettings : MonoBehaviour
                         break;
                     }
 
-                    // Назначаем клавишу
                     AssignNewKey(key);
                     yield break;
                 }
             }
-            yield return null; // Ждём следующий кадр
+            yield return null;
         }
     }
 
@@ -178,7 +188,6 @@ public class KeysSettings : MonoBehaviour
         {
             Debug.Log($"Клавиша {newKey} уже используется!");
 
-            // Восстанавливаем текст на кнопке
             Text buttonText = GetButtonTextForAction(currentAction);
             if (buttonText != null)
             {
@@ -189,7 +198,6 @@ public class KeysSettings : MonoBehaviour
             return;
         }
 
-        // Сохраняем новую клавишу
         switch (currentAction)
         {
             case "Left":
@@ -205,6 +213,7 @@ public class KeysSettings : MonoBehaviour
 
         SaveKeyBindings();
         UpdateButtonTexts();
+        UpdateKeysDisplay(); // Обновляем отображение
 
         Debug.Log($"Клавиша {newKey} назначена для действия {currentAction}");
 
@@ -239,12 +248,10 @@ public class KeysSettings : MonoBehaviour
 
     private bool IsKeyAvailable(KeyCode key)
     {
-        // Разрешаем использовать ту же клавишу, если она принадлежит текущему действию
         if (currentAction == "Left" && currentLeftKey == key) return true;
         if (currentAction == "Right" && currentRightKey == key) return true;
         if (currentAction == "Skip" && currentSkipKey == key) return true;
 
-        // Проверяем, не используется ли клавиша другим действием
         if (currentAction != "Left" && currentLeftKey == key) return false;
         if (currentAction != "Right" && currentRightKey == key) return false;
         if (currentAction != "Skip" && currentSkipKey == key) return false;

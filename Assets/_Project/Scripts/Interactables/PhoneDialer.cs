@@ -1,24 +1,34 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class PhoneDialer : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private TMP_Text displayText;
     [SerializeField] private GameObject phonePanel;
+    public GameObject blocker;
 
-    [Header("Story Numbers")]
-    [SerializeField] private string firstStoryNumber = "111";
-    [SerializeField] private string secondStoryNumber = "222";
+    [Header("Audio")]
+    [SerializeField] private AudioClip callSound;
+    [SerializeField] private AudioClip buttonPressSound;
 
     [Header("Dialogue Flags")]
     [SerializeField] private string firstCallFlag = "1_call";
     [SerializeField] private string secondCallPermitFlag = "2_call_permit";
+    [SerializeField] private string secondCallFlag = "2_call";
+
+    [Header("Dialogues")]
+    [SerializeField] private int firstDialogueID = 54;
+    [SerializeField] private int secondDialogueID = 56;
 
     private string currentNumber = "";
+    private int callCount = 0;
 
     public void PressDigit(string digit)
     {
+        // Звук нажатия кнопки
+        PlayButtonSound();
+
         currentNumber += digit;
         UpdateDisplay();
     }
@@ -35,6 +45,8 @@ public class PhoneDialer : MonoBehaviour
 
         if (phonePanel != null)
             phonePanel.SetActive(false);
+        if (blocker != null)
+            blocker.SetActive(false);
     }
 
     public void Call()
@@ -46,87 +58,76 @@ public class PhoneDialer : MonoBehaviour
             return;
         }
 
-        if (currentNumber == firstStoryNumber)
-        {
-            FirstCall();
-            return;
-        }
+        // Звук звонка
+        PlayCallSound();
 
-        if (currentNumber == secondStoryNumber)
-        {
-            SecondCall();
-            return;
-        }
+        callCount++;
 
-        WrongNumber();
+        switch (callCount)
+        {
+            case 1:
+                FirstCall();
+                break;
+            case 2:
+                SecondCall();
+                break;
+            default:
+                SubsequentCall();
+                break;
+        }
+    }
+
+    private void PlayButtonSound()
+    {
+        if (buttonPressSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySound(buttonPressSound);
+        }
+    }
+
+    private void PlayCallSound()
+    {
+        if (callSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySound(callSound);
+        }
     }
 
     private void FirstCall()
     {
-        if (FlagManager.Instance == null)
-        {
-            Debug.LogError("FlagManager не найден!");
-            return;
-        }
-
-        bool firstCallDone = FlagManager.Instance.GetFlag(firstCallFlag);
-
-        if (firstCallDone)
-        {
-            DialogueUI.Instance?.Message("", "*** никто не отвечает ***", null);
-            return;
-        }
-
-        FlagManager.Instance.SetFlag(firstCallFlag, true);
+        FlagManager.Instance?.SetFlag(firstCallFlag, true);
 
         DialogueUI.Instance?.Message(
             "",
             "*** тишина ***",
-            () => Invoke(nameof(StartFirstCallDialogue), 2.5f)
+            () => Invoke(nameof(StartFirstCallDialogue), 0.2f)
         );
     }
 
     private void SecondCall()
     {
-        if (FlagManager.Instance == null)
-        {
-            Debug.LogError("FlagManager не найден!");
-            return;
-        }
-
-        bool secondCallAllowed = FlagManager.Instance.GetFlag(secondCallPermitFlag);
-
-        if (!secondCallAllowed)
-        {
-            DialogueUI.Instance?.Message("", "*** номер недоступен ***", null);
-            return;
-        }
+        FlagManager.Instance?.SetFlag(secondCallFlag, true);
 
         DialogueUI.Instance?.Message(
             "",
             "<color=red>*** UNKNOWN ERROR ***  *** UNKNOWN ERROR ***  *** UNKNOWN ERROR ***</color>",
-            () => Invoke(nameof(StartSecondCallDialogue), 2.5f)
+            () => Invoke(nameof(StartSecondCallDialogue), 0.6f)
         );
     }
 
-    private void WrongNumber()
+    private void SubsequentCall()
     {
-        DialogueUI.Instance?.Message("", "*** номер не отвечает ***", null);
+        DialogueUI.Instance?.Message("", "*** фраза из бд ***", null);
     }
 
     private void StartFirstCallDialogue()
     {
-        DialogueManager.Instance?.StartDialogue(54);
+        DialogueManager.Instance?.StartDialogue(firstDialogueID);
     }
 
     private void StartSecondCallDialogue()
     {
-        DialogueManager.Instance?.StartDialogue(56, LoadNextScene);
-    }
-
-    private void LoadNextScene()
-    {
-        SceneLoader.Instance.LoadLocation("Fiziks");
+        DialogueManager.Instance?.StartDialogue(secondDialogueID);
     }
 
     private void UpdateDisplay()
