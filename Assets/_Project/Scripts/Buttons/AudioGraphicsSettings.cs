@@ -20,8 +20,24 @@ public class AudioGraphicsSettings : MonoBehaviour
 
     private void Start()
     {
+        // Загружаем настройки ДО настройки слушателей
         LoadSettings();
         SetupUIListeners();
+
+        // Применяем все настройки после загрузки
+        StartCoroutine(ApplySettingsAfterAudioManagerReady());
+    }
+
+    private System.Collections.IEnumerator ApplySettingsAfterAudioManagerReady()
+    {
+        // Ждём инициализации AudioManager
+        while (AudioManager.Instance == null)
+        {
+            yield return null;
+        }
+
+        // Применяем звуковые настройки
+        ApplyAudioSettings();
         ApplyAllSettings();
     }
 
@@ -52,26 +68,53 @@ public class AudioGraphicsSettings : MonoBehaviour
 
     private void OnSoundVolumeChanged(float value)
     {
+        PlayerPrefs.SetFloat("SoundVolume", value);
+        PlayerPrefs.Save();
+
         if (AudioManager.Instance != null)
             AudioManager.Instance.SetSoundVolume(value);
+        else
+            Debug.LogWarning("AudioManager.Instance is null! Sound volume will be applied later.");
 
         UpdateTexts();
     }
 
     private void OnMusicVolumeChanged(float value)
     {
+        PlayerPrefs.SetFloat("MusicVolume", value);
+        PlayerPrefs.Save();
+
         if (AudioManager.Instance != null)
             AudioManager.Instance.SetMusicVolume(value);
+        else
+            Debug.LogWarning("AudioManager.Instance is null! Music volume will be applied later.");
 
         UpdateTexts();
     }
 
     private void OnBrightnessChanged(float value)
     {
+        PlayerPrefs.SetFloat("Brightness", value);
+        PlayerPrefs.Save();
+
+        ApplyBrightness(value);
+
         if (BrightnessManager.Instance != null)
             BrightnessManager.Instance.SetBrightness(value);
 
         UpdateTexts();
+    }
+
+    private void ApplyAudioSettings()
+    {
+        float soundVol = PlayerPrefs.GetFloat("SoundVolume", defaultSoundVolume);
+        float musicVol = PlayerPrefs.GetFloat("MusicVolume", defaultMusicVolume);
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.SetSoundVolume(soundVol);
+            AudioManager.Instance.SetMusicVolume(musicVol);
+        }
     }
 
     private void ApplyBrightness(float value)
@@ -85,15 +128,22 @@ public class AudioGraphicsSettings : MonoBehaviour
 
     private void UpdateTexts()
     {
-        if (soundVolumeText != null && AudioManager.Instance != null)
-            soundVolumeText.text = Mathf.RoundToInt(AudioManager.Instance.GetSoundVolume() * 100) + "%";
-
-        if (musicVolumeText != null && AudioManager.Instance != null)
-            musicVolumeText.text = Mathf.RoundToInt(AudioManager.Instance.GetMusicVolume() * 100) + "%";
-
-        if (brightnessText != null && BrightnessManager.Instance != null)
+        if (soundVolumeText != null)
         {
-            brightnessText.text = Mathf.RoundToInt(BrightnessManager.Instance.GetBrightness() * 100) + "%";
+            float soundVol = PlayerPrefs.GetFloat("SoundVolume", defaultSoundVolume);
+            soundVolumeText.text = Mathf.RoundToInt(soundVol * 100) + "%";
+        }
+
+        if (musicVolumeText != null)
+        {
+            float musicVol = PlayerPrefs.GetFloat("MusicVolume", defaultMusicVolume);
+            musicVolumeText.text = Mathf.RoundToInt(musicVol * 100) + "%";
+        }
+
+        if (brightnessText != null)
+        {
+            float brightness = PlayerPrefs.GetFloat("Brightness", defaultBrightness);
+            brightnessText.text = Mathf.RoundToInt(brightness * 100) + "%";
         }
     }
 

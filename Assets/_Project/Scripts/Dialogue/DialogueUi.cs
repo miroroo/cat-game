@@ -240,11 +240,10 @@ public class DialogueUI : MonoBehaviour
             blocker.SetActive(false);
     }
 
-
-
     public void Message(string speaker, string message, System.Action continueCallback)
     {
         dialoguePanel.SetActive(true);
+        blocker.SetActive(true);
 
         panelRect.sizeDelta = new Vector2(panelRect.sizeDelta.x,smallHeight);
 

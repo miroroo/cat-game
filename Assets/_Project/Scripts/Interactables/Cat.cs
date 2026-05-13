@@ -18,6 +18,8 @@ public class Cat : InteractableObject
         base.Interact();
         Debug.Log("Клик по кошке");
 
+        DialogueUI.Instance.gameObject.SetActive(true);
+
         // Первый разговор
         if (!FlagManager.Instance.GetFlag(flag1))
         {

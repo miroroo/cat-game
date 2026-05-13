@@ -13,7 +13,7 @@ public class DialogueManager : MonoBehaviour
         new Dictionary<int, DialogueRecord>();
     private Action onDialogueComplete;
 
-    public bool IsDialogueActive { get; private set; }
+    public bool IsDialogueActive { get; set; }
 
     private void Awake()
     {

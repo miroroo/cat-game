@@ -9,6 +9,7 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)] public float musicVolume = 0.75f;
 
     private AudioSource musicSource;
+    private AudioClip currentMusicClip; // Запоминаем текущую музыку
 
     private void Awake()
     {
@@ -21,12 +22,14 @@ public class AudioManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Создаём источник для музыки
-        musicSource = gameObject.AddComponent<AudioSource>();
-        musicSource.loop = true;
-        musicSource.tag = "Music";
+        // НЕ создавать повторно AudioSource
+        musicSource = GetComponent<AudioSource>();
 
-        // Загружаем настройки
+        if (musicSource == null)
+            musicSource = gameObject.AddComponent<AudioSource>();
+
+        musicSource.loop = true;
+
         LoadSettings();
     }
 
@@ -39,25 +42,54 @@ public class AudioManager : MonoBehaviour
             musicSource.volume = musicVolume;
     }
 
-    // Проигрывание звука эффекта (для кнопок, шагов, взаимодействий)
+    // Проверка, играет ли указанная музыка
+    public bool IsMusicPlaying(AudioClip clip)
+    {
+        if (musicSource == null) return false;
+        return musicSource.isPlaying && musicSource.clip == clip;
+    }
+
+    // Проверка, играет ли любая музыка
+    public bool IsAnyMusicPlaying()
+    {
+        return musicSource != null && musicSource.isPlaying;
+    }
+
+    // Установка фоновой музыки
+    public void SetMusic(AudioClip musicClip, float volume = -1f)
+    {
+        if (musicClip == null) return;
+
+        // Если та же музыка уже играет - не перезапускаем
+        if (musicSource.clip == musicClip && musicSource.isPlaying)
+        {
+            Debug.Log("Same music is already playing, skipping.");
+            return;
+        }
+
+        musicSource.clip = musicClip;
+        musicSource.volume = volume >= 0 ? volume : musicVolume;
+        musicSource.Play();
+        currentMusicClip = musicClip;
+
+        Debug.Log($"Starting new music: {musicClip.name}");
+    }
+
+    // Остальные методы без изменений...
     public void PlaySound(AudioClip clip)
     {
         if (clip != null)
         {
-            // Создаём временный AudioSource для звука
             GameObject soundObject = new GameObject("TempSound");
             AudioSource tempSource = soundObject.AddComponent<AudioSource>();
             tempSource.clip = clip;
             tempSource.volume = soundVolume;
             tempSource.tag = "SoundEffect";
             tempSource.Play();
-
-            // Уничтожаем объект после окончания звука
             Destroy(soundObject, clip.length);
         }
     }
 
-    // Проигрывание звука с указанной громкостью
     public void PlaySound(AudioClip clip, float volumeMultiplier)
     {
         if (clip != null)
@@ -72,42 +104,23 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // Установка фоновой музыки
-    public void SetMusic(AudioClip musicClip, float volume = -1f)
-    {
-        if (musicClip == null) return;
-
-        if (musicSource.clip == musicClip && musicSource.isPlaying)
-            return;
-
-        musicSource.clip = musicClip;
-        musicSource.volume = volume >= 0 ? volume : musicVolume;
-        musicSource.Play();
-    }
-
-    // Изменение громкости эффектов (применяется ко всем новым звукам)
     public void SetSoundVolume(float volume)
     {
         soundVolume = volume;
         PlayerPrefs.SetFloat("SoundVolume", volume);
         PlayerPrefs.Save();
-
-        // Обновляем громкость у всех существующих SoundEffect
         UpdateAllSoundEffects();
     }
 
-    // Изменение громкости музыки
     public void SetMusicVolume(float volume)
     {
         musicVolume = volume;
         if (musicSource != null)
             musicSource.volume = volume;
-
         PlayerPrefs.SetFloat("MusicVolume", volume);
         PlayerPrefs.Save();
     }
 
-    // Обновляем громкость у всех существующих звуков в текущей сцене
     private void UpdateAllSoundEffects()
     {
         AudioSource[] allSources = FindObjectsOfType<AudioSource>(true);
@@ -122,7 +135,6 @@ public class AudioManager : MonoBehaviour
 
     public float GetSoundVolume() => soundVolume;
     public float GetMusicVolume() => musicVolume;
-
     public void PauseMusic() => musicSource.Pause();
     public void ResumeMusic() => musicSource.UnPause();
 }
