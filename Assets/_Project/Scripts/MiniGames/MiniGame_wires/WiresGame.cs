@@ -17,12 +17,15 @@ public class WiresGame : MonoBehaviour
     public float delay = 0.3f;
     public float connectTime = 3f;
     public string sceneToLoad = "NextScene"; // Имя сцены для загрузки при победе
+    public string gameOverScene = "GameOver"; // Имя сцены для загрузки при поражении
+    public int maxFailures = 5; // Максимальное количество неудачных попыток
 
     private List<Wire> order = new List<Wire>();
     private int index = 0;
     private bool playing = false;
     private Coroutine timer;
-    private bool isWaitingForRestart = false; // Флаг ожидания перезапуска
+    private bool isWaitingForRestart = false;
+    private int failureCount = 0; // Счетчик неудачных попыток
 
     void Start()
     {
@@ -145,6 +148,27 @@ public class WiresGame : MonoBehaviour
         playing = false;
         isWaitingForRestart = true;
 
+        // Увеличиваем счетчик неудач
+        failureCount++;
+
+        // Проверяем, достигнут ли лимит неудач
+        if (failureCount >= maxFailures)
+        {
+            // Переходим на сцену GameOver
+            if (SceneLoader.Instance != null)
+            {
+                DatabaseManager.Instance.ReloadDatabase();
+                SceneLoader.Instance.LoadLocation(gameOverScene);
+            }
+            else
+            {
+                Debug.LogError("SceneLoader.Instance не найден!");
+                // Альтернативный способ загрузки сцены
+                UnityEngine.SceneManagement.SceneManager.LoadScene(gameOverScene);
+            }
+            return;
+        }
+
         // Запускаем перезапуск игры через небольшую задержку
         StartCoroutine(RestartGame());
     }
@@ -159,5 +183,11 @@ public class WiresGame : MonoBehaviour
 
         // Перезапускаем игру
         StartGame();
+    }
+
+    // Опционально: метод для сброса счетчика неудач (например, при победе)
+    private void ResetFailureCount()
+    {
+        failureCount = 0;
     }
 }

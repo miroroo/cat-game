@@ -54,6 +54,33 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
+    public void ReloadDatabase()
+    {
+        try
+        {
+            string sourcePath = System.IO.Path.Combine(Application.streamingAssetsPath, "game_database.db");
+
+            string targetPath = System.IO.Path.Combine(Application.persistentDataPath, "game_database.db");
+
+            System.IO.File.Delete(targetPath);
+            Debug.Log("Старая база удалена");
+
+            System.IO.File.Copy(sourcePath, targetPath);
+            Debug.Log("Новая база скопирована в persistentDataPath");
+
+            Debug.Log($"Подключаемся к БД: {targetPath}");
+
+            _db = new SQLiteConnection(targetPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
+
+            Debug.Log("База данных успешно открыта");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"Не удалось открыть БД: {ex.Message}");
+            _db = null;
+        }
+    }
+
     public SQLiteConnection Connection
     {
         get

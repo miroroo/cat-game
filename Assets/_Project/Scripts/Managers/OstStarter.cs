@@ -17,5 +17,6 @@ public class OstStarter : MonoBehaviour
         {
             AudioManager.Instance.SetMusic(backgroundMusic, musicVolume);
         }
+        enabled = false;
     }
 }
