@@ -22,7 +22,7 @@ public class FitBackgroundToScreen : MonoBehaviour
         float scaleY = screenHeight / spriteHeight;
 
         // Выбираем максимальный масштаб
-        float scale = Mathf.Max(scaleX, scaleY);
+        float scale = Mathf.Min(scaleX, scaleY);
 
         // Применяем масштаб
         transform.localScale = new Vector3(scale, scale, 1);

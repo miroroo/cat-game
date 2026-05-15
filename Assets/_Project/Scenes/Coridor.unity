@@ -598,8 +598,8 @@ Transform:
   m_GameObject: {fileID: 1000218892}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.7994, y: 0.13, z: 0}
-  m_LocalScale: {x: 4.664113, y: 12.693648, z: 1}
+  m_LocalPosition: {x: 12.9122, y: 0.13, z: 0}
+  m_LocalScale: {x: 14.889794, y: 12.693648, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -677,6 +677,7 @@ GameObject:
   - component: {fileID: 1318335334}
   - component: {fileID: 1318335333}
   - component: {fileID: 1318335332}
+  - component: {fileID: 1318335335}
   m_Layer: 0
   m_Name: photo_2026-04-18_11-22-42_0
   m_TagString: Untagged
@@ -691,7 +692,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1318335331}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4cb85ab7f37b9e94a95da66f669690bd, type: 3}
   m_Name: 
@@ -770,6 +771,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1318335335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1318335331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 518bcd2131a163e468bea24982fa112b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BackgroundScaler
+  targetWidth: 20
+  targetHeight: 11.25
+  keepAspectRatio: 1
+  scaleMode: 0
+  centerToCamera: 1
+  positionOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &1353066387
 GameObject:
   m_ObjectHideFlags: 0

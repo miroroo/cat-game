@@ -112,7 +112,7 @@ public class FlagManager : MonoBehaviour
             flag.flagValue = 0;
             db.Update(flag);
         }
-
+        LoadFlagsFromDB();
         Debug.Log("Все флаги сброшены");
     }
 }

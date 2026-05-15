@@ -27,6 +27,7 @@ public class WiresGame : MonoBehaviour
     private bool isWaitingForRestart = false;
     private int failureCount = 0; // Счетчик неудачных попыток
 
+
     void Start()
     {
         foreach (Wire w in wires)
@@ -94,16 +95,37 @@ public class WiresGame : MonoBehaviour
         float t = 0;
         while (t < connectTime)
         {
+            // ===== ДОБАВИТЬ ЭТУ ПРОВЕРКУ =====
+            if (index >= order.Count || index < 0)
+            {
+                yield break;
+            }
+            // ================================
+
             if (order[index].connected) yield break;
             t += Time.deltaTime;
             yield return null;
         }
-        Lose();
+
+        // ===== ДОБАВИТЬ ЭТУ ПРОВЕРКУ =====
+        if (index < order.Count)
+        {
+            Lose();
+        }
+        // ================================
     }
 
     public void TryConnect(Wire clicked)
     {
         if (!playing || clicked.connected) return;
+
+        // ===== ДОБАВИТЬ ЭТУ ПРОВЕРКУ =====
+        if (index >= order.Count)
+        {
+            Win();
+            return;
+        }
+        // ================================
 
         if (clicked == order[index])
         {

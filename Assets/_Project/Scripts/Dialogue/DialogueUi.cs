@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Timeline;
 using UnityEngine.UI;
 
 public class DialogueUI : MonoBehaviour
@@ -19,15 +18,20 @@ public class DialogueUI : MonoBehaviour
     public Image rightSasha;
     public GameObject blocker;
 
-    private float normalHeight;
-    private float smallHeight;
+    [Header("Sizes")]
+    [SerializeField] private float panelHeightNormal = 170f;
+    [SerializeField] private float panelHeightSmall = 150f;
+    [SerializeField] private float imageSize = 350f; // Размер изображений
+
     private RectTransform panelRect;
-    private string fullText;              // полный текст текущей реплики
-    private int currentPage = 0;          // текущая страница
-    private int totalPages = 1;           // всего страниц
+    private RectTransform leftCatRect;
+    private RectTransform rightSashaRect;
+
+    private string fullText;
+    private int currentPage = 0;
+    private int totalPages = 1;
     private const int CHARS_PER_PAGE = 250;
     private System.Action onContinue;
-    private System.Action onPageComplete; // новое: вызывается когда все страницы показаны
 
     private AudioSource musicSource;
     [SerializeField] private AudioClip backgroundMusic;
@@ -47,13 +51,15 @@ public class DialogueUI : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-
             DontDestroyOnLoad(transform.root.gameObject);
 
             panelRect = dialoguePanel.GetComponent<RectTransform>();
 
-            normalHeight = panelRect.sizeDelta.y;
-            smallHeight = normalHeight / 2f;
+            // Получаем RectTransform для изображений
+            if (leftCat != null)
+                leftCatRect = leftCat.GetComponent<RectTransform>();
+            if (rightSasha != null)
+                rightSashaRect = rightSasha.GetComponent<RectTransform>();
         }
         else
         {
@@ -62,50 +68,92 @@ public class DialogueUI : MonoBehaviour
         }
 
         Hide();
-
-        //второй раз прописываешь тоже самое
         if (blocker != null)
             blocker.SetActive(false);
     }
 
-
-    // Показывает текущую страницу текста
-    private void ShowCurrentPage()
+    public void Show(string speaker, string text, System.Action continueCallback)
     {
-        int startIndex = currentPage * CHARS_PER_PAGE;
+        // Восстанавливаем нормальную высоту
+        panelRect.sizeDelta = new Vector2(panelRect.sizeDelta.x, panelHeightNormal);
 
-        // Если это последняя страница или текст короче одной страницы
-        if (currentPage >= totalPages - 1)
+        // Показываем изображения
+        if (leftCat != null)
         {
-            // Показываем остаток текста
-            dialogueText.text = fullText.Substring(startIndex);
-
-            // Меняем текст кнопки на "Продолжить" (переход к следующей реплике)
-            //if (continueButton != null)
-            //{
-            //    var buttonText = continueButton.GetComponentInChildren<TextMeshProUGUI>();
-            //    if (buttonText != null) buttonText.text = "Продолжить →";
-            //}
+            leftCat.enabled = true;
+            leftCat.gameObject.SetActive(true);
         }
-        else
+        if (rightSasha != null)
         {
-            // Показываем часть текста
-            int length = Mathf.Min(CHARS_PER_PAGE, fullText.Length - startIndex);
-            dialogueText.text = fullText.Substring(startIndex, length) + "...";
+            rightSasha.enabled = true;
+            rightSasha.gameObject.SetActive(true);
+        }
 
-            // Меняем текст кнопки на "Далее" (следующая страница)
-            //if (continueButton != null)
-            //{
-            //    var buttonText = continueButton.GetComponentInChildren<TextMeshProUGUI>();
-            //    if (buttonText != null) buttonText.text = "Далее ▼";
-            //}
+        // Настраиваем размеры изображений
+        SetImageSize();
+
+        dialoguePanel.SetActive(true);
+        if (blocker != null) blocker.SetActive(true);
+
+        UpdateCharacters(speaker);
+
+        if (speakerText != null)
+            speakerText.text = speaker;
+
+        fullText = text;
+        currentPage = 0;
+        totalPages = Mathf.CeilToInt((float)fullText.Length / CHARS_PER_PAGE);
+
+        ShowCurrentPage();
+
+        if (dialogueText != null)
+        {
+            dialogueText.textWrappingMode = TextWrappingModes.Normal;
+            dialogueText.overflowMode = TextOverflowModes.Overflow;
+        }
+
+        if (continueButton != null)
+        {
+            continueButton.gameObject.SetActive(true);
+            continueButton.onClick.RemoveAllListeners();
+            continueButton.onClick.AddListener(OnContinuePressed);
+        }
+
+        onContinue = continueCallback;
+    }
+
+    private void SetImageSize()
+    {
+        // Устанавливаем фиксированный размер для изображений
+        if (leftCatRect != null)
+        {
+            leftCatRect.sizeDelta = new Vector2(imageSize, imageSize);
+        }
+        if (rightSashaRect != null)
+        {
+            rightSashaRect.sizeDelta = new Vector2(imageSize, imageSize);
         }
     }
 
-    // Переопределяем обработку продолжения
+    private void ShowCurrentPage()
+    {
+        if (dialogueText == null) return;
+
+        int startIndex = currentPage * CHARS_PER_PAGE;
+
+        if (currentPage >= totalPages - 1)
+        {
+            dialogueText.text = fullText.Substring(startIndex);
+        }
+        else
+        {
+            int length = Mathf.Min(CHARS_PER_PAGE, fullText.Length - startIndex);
+            dialogueText.text = fullText.Substring(startIndex, length) + "...";
+        }
+    }
+
     private void OnContinuePressed()
     {
-        // Используем AudioManager вместо прямого вызова
         if (backgroundMusic != null && AudioManager.Instance != null)
         {
             AudioManager.Instance.PlaySound(backgroundMusic, 0.3f);
@@ -130,91 +178,49 @@ public class DialogueUI : MonoBehaviour
         }
     }
 
-    public void Show(string speaker, string text, System.Action continueCallback)
-    {
-        panelRect.sizeDelta = new Vector2(panelRect.sizeDelta.x, normalHeight);
-
-        leftCat.enabled = true;
-        rightSasha.enabled = true;
-
-        dialoguePanel.SetActive(true);
-        blocker.SetActive(true);
-
-        UpdateCharacters(speaker);
-
-        speakerText.text = speaker;
-
-        // СОХРАНЯЕМ ПОЛНЫЙ ТЕКСТ
-        fullText = text;
-        currentPage = 0;
-
-        // ВЫЧИСЛЯЕМ КОЛИЧЕСТВО СТРАНИЦ
-        totalPages = Mathf.CeilToInt((float)fullText.Length / CHARS_PER_PAGE);
-
-        // ПОКАЗЫВАЕМ ПЕРВУЮ СТРАНИЦУ
-        ShowCurrentPage();
-
-        dialogueText.textWrappingMode = TextWrappingModes.Normal;
-        dialogueText.overflowMode = TextOverflowModes.Overflow;
-        //почитать
-
-        continueButton.gameObject.SetActive(true);
-
-        onContinue = continueCallback;
-        onPageComplete = null; // сбрасываем
-
-        continueButton.onClick.RemoveAllListeners();
-        continueButton.onClick.AddListener(OnContinuePressed);
-    }
-
     void UpdateCharacters(string speaker)
     {
-        Color active = Color.white; // обычный цвет
-        Color darker = new Color(0.5f, 0.5f, 0.5f, 1f); // затемнённый (серый), непрозрачный
+        if (leftCat == null || rightSasha == null) return;
+
+        Color active = Color.white;
+        Color darker = new Color(0.5f, 0.5f, 0.5f, 1f);
 
         if (speaker == "Саша")
         {
-            leftCat.color = darker;
-            rightSasha.color = active;
+            if (leftCat != null) leftCat.color = darker;
+            if (rightSasha != null) rightSasha.color = active;
         }
         else if (speaker == "Марсик")
         {
-            leftCat.color = active;
-            rightSasha.color = darker;
+            if (leftCat != null) leftCat.color = active;
+            if (rightSasha != null) rightSasha.color = darker;
         }
         else
         {
-            leftCat.color = darker;
-            rightSasha.color = darker;
+            if (leftCat != null) leftCat.color = darker;
+            if (rightSasha != null) rightSasha.color = darker;
         }
     }
 
-
-
     void Update()
     {
-        if (dialoguePanel.activeSelf)
+        if (dialoguePanel != null && dialoguePanel.activeSelf)
         {
             bool shouldContinue = false;
 
-            // Клавиши
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
             {
                 shouldContinue = true;
             }
 
-            // Клик мыши по панели диалога (правильный способ для UI)
             if (Input.GetMouseButtonDown(0))
             {
-                // Создаём PointerEventData для проверки
                 PointerEventData pointerData = new PointerEventData(EventSystem.current);
                 pointerData.position = Input.mousePosition;
 
-                // Список объектов под мышью
                 List<RaycastResult> results = new List<RaycastResult>();
                 EventSystem.current.RaycastAll(pointerData, results);
 
-                // Проверяем, есть ли среди них наша панель
                 foreach (RaycastResult result in results)
                 {
                     if (result.gameObject == dialoguePanel)
@@ -231,11 +237,11 @@ public class DialogueUI : MonoBehaviour
             }
         }
     }
+
     public void Hide()
     {
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
-
         if (blocker != null)
             blocker.SetActive(false);
     }
@@ -243,34 +249,38 @@ public class DialogueUI : MonoBehaviour
     public void Message(string speaker, string message, System.Action continueCallback)
     {
         dialoguePanel.SetActive(true);
-        blocker.SetActive(true);
+        if (blocker != null) blocker.SetActive(true);
 
-        panelRect.sizeDelta = new Vector2(panelRect.sizeDelta.x,smallHeight);
+        // Устанавливаем маленькую высоту для сообщений
+        panelRect.sizeDelta = new Vector2(panelRect.sizeDelta.x, panelHeightSmall);
 
+        // Скрываем изображения для сообщений
+        if (leftCat != null) leftCat.enabled = false;
+        if (rightSasha != null) rightSasha.enabled = false;
 
-        leftCat.enabled = false;
-        rightSasha.enabled = false;
+        if (speakerText != null) speakerText.text = "";
+        if (dialogueText != null)
+        {
+            dialogueText.text = message;
+            dialogueText.textWrappingMode = TextWrappingModes.Normal;
+            dialogueText.overflowMode = TextOverflowModes.Overflow;
+        }
 
-        speakerText.text = "";
-        dialogueText.text = message;
+        if (continueButton != null)
+        {
+            continueButton.gameObject.SetActive(true);
+            continueButton.onClick.RemoveAllListeners();
+            continueButton.onClick.AddListener(OnContinuePressed);
+        }
 
-        dialogueText.textWrappingMode = TextWrappingModes.Normal;
-        dialogueText.overflowMode = TextOverflowModes.Overflow;
-
-        continueButton.gameObject.SetActive(true); 
         onContinue = continueCallback;
-        continueButton.onClick.RemoveAllListeners();
-        continueButton.onClick.AddListener(OnContinuePressed);
-        // автоматически закрываем через 3 секунды
         StartCoroutine(AutoCloseMessage());
     }
 
     private IEnumerator AutoCloseMessage()
     {
         yield return new WaitForSeconds(2f);
-
         Hide();
-
         if (onContinue != null)
         {
             onContinue.Invoke();

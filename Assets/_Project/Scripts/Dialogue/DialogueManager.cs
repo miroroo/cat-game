@@ -151,6 +151,12 @@ public class DialogueManager : MonoBehaviour
         onDialogueComplete?.Invoke();
         onDialogueComplete = null;
     }
+
+    public void ForceReloadDialogues()
+    {
+        Debug.Log("Принудительная перезагрузка диалогов из БД");
+        LoadAllDialogues();
+    }
 }
 
 

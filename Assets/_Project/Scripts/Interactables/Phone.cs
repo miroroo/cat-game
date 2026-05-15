@@ -5,6 +5,7 @@ public class Phone : InteractableObject
     [Header("Phone UI")]
     [SerializeField] private GameObject phonePanel;
     public GameObject blocker;
+    [SerializeField] private Collider2D exitCollider;
 
     public override void Interact()
     {
@@ -22,22 +23,21 @@ public class Phone : InteractableObject
 
     private void OpenPhone()
     {
-        if (phonePanel == null)
-        {
-            Debug.LogError("PhonePanel не назначен в Inspector!");
-            return;
-        }
-
         phonePanel.SetActive(true);
         blocker.SetActive(true);
-        Debug.Log("Телефон открыт крупным планом");
+
+        // Просто отключаем коллайдер у Exit
+        if (exitCollider != null)
+            exitCollider.enabled = false;
     }
 
     public void ClosePhone()
     {
-        if (phonePanel != null)
-            phonePanel.SetActive(false);
-        if (blocker != null)
-            blocker.SetActive(false);
+        phonePanel.SetActive(false);
+        blocker.SetActive(false);
+
+        // Включаем коллайдер обратно
+        if (exitCollider != null)
+            exitCollider.enabled = true;
     }
 }

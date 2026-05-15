@@ -5,28 +5,24 @@ using System.Collections;
 public class StartGameButton : MonoBehaviour
 {
     [Header("Названия сцен")]
-    [SerializeField] private string defaultSceneName = "LectureHall"; // Сцена по умолчанию
+    [SerializeField] private string defaultSceneName = "LectureHall";
     [SerializeField] private AudioClip clickSound;
 
     public void OnClick()
     {
+
         StartCoroutine(LoadSceneWithSound());
     }
 
     private IEnumerator LoadSceneWithSound()
     {
-        // Проигрываем звук через глобальный менеджер
         if (clickSound != null && AudioManager.Instance != null)
         {
+            Debug.Log("Проигрываем звук клика");
             AudioManager.Instance.PlaySound(clickSound);
             yield return new WaitForSeconds(0.3f);
         }
-        else
-        {
-            yield return null;
-        }
 
-        // Загружаем последнюю сцену или сцену по умолчанию
         string sceneToLoad = SceneLoader.Instance != null ? SceneLoader.Instance.GetLastScene() : defaultSceneName;
 
         if (string.IsNullOrEmpty(sceneToLoad))
@@ -34,6 +30,11 @@ public class StartGameButton : MonoBehaviour
             sceneToLoad = defaultSceneName;
         }
 
-        SceneManager.LoadScene(sceneToLoad);
+
+        // Проверяем доступность сцены
+        if (Application.CanStreamedLevelBeLoaded(sceneToLoad))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(sceneToLoad);
+        }
     }
 }

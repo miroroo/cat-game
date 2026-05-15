@@ -16,3 +16,4 @@ public class WireClickHandler : MonoBehaviour
 		game?.TryConnect(wire);
 	}
 }
+

@@ -209,6 +209,7 @@ GameObject:
   - component: {fileID: 442518045}
   - component: {fileID: 442518044}
   - component: {fileID: 442518043}
+  - component: {fileID: 442518046}
   m_Layer: 0
   m_Name: "ChatGPT Image 13 \u043C\u0430\u044F 2026 \u0433., 21_22_26_0"
   m_TagString: Untagged
@@ -223,7 +224,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 442518042}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4cb85ab7f37b9e94a95da66f669690bd, type: 3}
   m_Name: 
@@ -302,6 +303,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &442518046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 442518042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 518bcd2131a163e468bea24982fa112b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BackgroundScaler
+  targetWidth: 20
+  targetHeight: 11.25
+  keepAspectRatio: 1
+  scaleMode: 0
+  centerToCamera: 1
+  positionOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &1350869414
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ public class PhoneDialer : MonoBehaviour
     [SerializeField] private TMP_Text displayText;
     [SerializeField] private GameObject phonePanel;
     public GameObject blocker;
+    [SerializeField] private Collider2D exitCollider;
 
     [Header("Audio")]
     [SerializeField] private AudioClip callSound;
@@ -47,6 +48,8 @@ public class PhoneDialer : MonoBehaviour
             phonePanel.SetActive(false);
         if (blocker != null)
             blocker.SetActive(false);
+        if (exitCollider != null)
+            exitCollider.enabled = true;
     }
 
     public void Call()

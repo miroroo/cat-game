@@ -52,11 +52,7 @@ public class MenuButton : MonoBehaviour
         if (DialogueManager.Instance != null)
             Destroy(DialogueManager.Instance.gameObject);
 
-        // Загрузка сцены
-        if (SceneLoader.Instance != null)
-            SceneLoader.Instance.LoadLocation(menuSceneName);
-        else
-            SceneManager.LoadScene(menuSceneName);
+        SceneManager.LoadScene(menuSceneName);
     }
 
     private void PlaySoundTemp(AudioClip clip)

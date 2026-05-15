@@ -14,7 +14,7 @@ public class DatabaseManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            InitializeDatabase();
+            ReloadDatabase();
         }
         else
         {
@@ -30,15 +30,11 @@ public class DatabaseManager : MonoBehaviour
 
             string targetPath = System.IO.Path.Combine(Application.persistentDataPath,"game_database.db");
 
-            // Для разработки:
-
-            if (System.IO.File.Exists(targetPath))
+            if (!System.IO.File.Exists(targetPath))
             {
-                System.IO.File.Delete(targetPath);
-                Debug.Log("Старая база удалена");
+                System.IO.File.Copy(sourcePath, targetPath);
             }
 
-            System.IO.File.Copy(sourcePath, targetPath);
             Debug.Log("Новая база скопирована в persistentDataPath");
 
             Debug.Log($"Подключаемся к БД: {targetPath}");
@@ -58,25 +54,51 @@ public class DatabaseManager : MonoBehaviour
     {
         try
         {
-            string sourcePath = System.IO.Path.Combine(Application.streamingAssetsPath, "game_database.db");
+            // Сначала закрываем существующее соединение
+            if (_db != null)
+            {
+                Debug.Log("Закрываем текущее соединение с БД");
+                _db.Close();
+                _db.Dispose();
+                _db = null;
+            }
 
+            // Небольшая задержка чтобы ОС освободила файл
+            System.Threading.Thread.Sleep(100);
+
+            string sourcePath = System.IO.Path.Combine(Application.streamingAssetsPath, "game_database.db");
             string targetPath = System.IO.Path.Combine(Application.persistentDataPath, "game_database.db");
 
-            System.IO.File.Delete(targetPath);
-            Debug.Log("Старая база удалена");
+            // Удаляем старый файл
+            if (System.IO.File.Exists(targetPath))
+            {
+                System.IO.File.Delete(targetPath);
+                Debug.Log("Старая база удалена");
+            }
 
+            // Копируем новый
             System.IO.File.Copy(sourcePath, targetPath);
             Debug.Log("Новая база скопирована в persistentDataPath");
 
-            Debug.Log($"Подключаемся к БД: {targetPath}");
-
+            // Открываем новое соединение
             _db = new SQLiteConnection(targetPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
+            Debug.Log("База данных успешно переоткрыта");
 
-            Debug.Log("База данных успешно открыта");
+            // Оповещаем DialogueManager о перезагрузке
+            if (DialogueManager.Instance != null)
+            {
+                DialogueManager.Instance.ForceReloadDialogues();
+            }
+
+            // Также оповести другие системы, которые кешируют данные из БД
+            if (FlagManager.Instance != null)
+            {
+                FlagManager.Instance.ResetAllFlags(); // если есть такой метод
+            }
         }
         catch (System.Exception ex)
         {
-            Debug.LogError($"Не удалось открыть БД: {ex.Message}");
+            Debug.LogError($"Не удалось переоткрыть БД: {ex.Message}");
             _db = null;
         }
     }
